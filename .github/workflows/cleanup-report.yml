@@ -1,0 +1,44 @@
+name: Cleanup Expired Reports
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cleanup-astro-report
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Delete reports older than 10 days and rebuild RSS
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python -m scripts.cleanup_reports
+
+      - name: Commit and push cleanup results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports feed
+          if git diff --cached --quiet; then
+            echo "No cleanup changes"
+            exit 0
+          fi
+          git commit -m "chore: cleanup expired reports [skip ci]"
+          git push

@@ -1,0 +1,6 @@
+{
+  "categories": ["astro-ph.GA", "astro-ph.CO", "astro-ph.SR"],
+  "max_results": 80,
+  "lookback_hours": 36,
+  "max_papers_in_report": 25
+}
