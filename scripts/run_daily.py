@@ -73,12 +73,13 @@ def main() -> int:
 
     id_to_index = {
         paper.get("id", ""): idx
-        for idx, paper in enumerate(papers, start=1)
-        if paper.get("id", "")
+        for idx, paper in enumerate(papers, start=1) if paper.get("id", "")
     }
     related_indices = []
     if isinstance(related_ids, list):
-        related_indices = [id_to_index[rid] for rid in related_ids if rid in id_to_index]
+        related_indices = [
+            id_to_index[rid] for rid in related_ids if rid in id_to_index
+        ]
     if related_indices:
         prefix = "[相关文献编号: " + ", ".join(str(i) for i in related_indices) + "]"
         global_summary = f"{prefix} {global_summary}".strip()

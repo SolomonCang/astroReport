@@ -53,9 +53,12 @@ def _fallback_summary(papers: list[dict[str, Any]]) -> dict[str, Any]:
             "keywords": paper.get("categories", [])[:3],
         })
     return {
-        "global_summary": "今日文献已更新。以下为自动生成的精简摘要。",
-        "related_ids": [paper.get("id", "") for paper in papers[:3] if paper.get("id", "")],
-        "items": items,
+        "global_summary":
+        "今日文献已更新。以下为自动生成的精简摘要。",
+        "related_ids":
+        [paper.get("id", "") for paper in papers[:3] if paper.get("id", "")],
+        "items":
+        items,
     }
 
 
@@ -66,7 +69,11 @@ def summarize_papers(
     api_base: str | None = None,
 ) -> dict[str, Any]:
     if not papers:
-        return {"global_summary": "今日没有匹配的新文献。", "related_ids": [], "items": []}
+        return {
+            "global_summary": "今日没有匹配的新文献。",
+            "related_ids": [],
+            "items": []
+        }
 
     if not api_key:
         return _fallback_summary(papers)
@@ -92,8 +99,7 @@ def summarize_papers(
         "format": {
             "global_summary":
             "2-3句中文概览，需优先覆盖 focus_skill 相关方向",
-            "related_ids":
-            ["与全局总结最相关的输入文献id，按相关性排序，最多5个"],
+            "related_ids": ["与全局总结最相关的输入文献id，按相关性排序，最多5个"],
             "items": [{
                 "id": "保持输入id",
                 "summary": "1-2句中文摘要，突出方法与结论",
@@ -165,7 +171,10 @@ def summarize_papers(
         if not isinstance(related_ids, list):
             related_ids = []
         paper_ids = {paper.get("id", "") for paper in papers}
-        related_ids = [rid for rid in related_ids if isinstance(rid, str) and rid in paper_ids][:5]
+        related_ids = [
+            rid for rid in related_ids
+            if isinstance(rid, str) and rid in paper_ids
+        ][:5]
         return {
             "global_summary": summary_text,
             "related_ids": related_ids,
