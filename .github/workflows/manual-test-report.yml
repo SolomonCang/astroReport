@@ -1,4 +1,4 @@
-name: Manual Test Report (Immediate)
+name: Manual Email Test
 
 on:
   workflow_dispatch:
@@ -11,9 +11,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  run-manual-test:
+  run-manual-email-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,26 +23,35 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Fetch today papers, summarize, rebuild RSS, send email
+      - name: Send a manual test email
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
-          OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           REPORT_RECIPIENT_EMAIL: ${{ secrets.REPORT_RECIPIENT_EMAIL }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          python -m scripts.run_daily
+          python - <<'PY'
+          import datetime as dt
 
-      - name: Commit and push artifacts
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports feed data
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "chore: manual test report run [skip ci]"
-          git push
+          from scripts.send_email_resend import send_digest_email
+
+          now = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+          subject = f"[astroReport] Manual Email Test - {now}"
+          html = (
+              "<h2>astroReport 邮件测试</h2>"
+              f"<p>触发时间：{now}</p>"
+              "<p>如果你收到这封邮件，说明 Resend 凭据、发件域名和收件配置可用。</p>"
+          )
+
+          ok = send_digest_email(
+              api_key="${{ secrets.RESEND_API_KEY }}",
+              from_email="${{ secrets.RESEND_FROM_EMAIL }}",
+              to_email="${{ secrets.REPORT_RECIPIENT_EMAIL }}",
+              subject=subject,
+              html_body=html,
+          )
+
+          if not ok:
+              raise SystemExit("manual email test failed")
+
+          print("manual email test sent")
+          PY

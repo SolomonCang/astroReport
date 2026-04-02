@@ -25,9 +25,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Delete reports older than 10 days and rebuild RSS
-        env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
+      - name: Delete reports older than 10 days
         run: |
           python -m scripts.cleanup_reports
 
@@ -35,7 +33,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports feed
+          git add reports
           if git diff --cached --quiet; then
             echo "No cleanup changes"
             exit 0

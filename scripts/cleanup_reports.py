@@ -5,13 +5,8 @@ import json
 import os
 from zoneinfo import ZoneInfo
 
-try:
-    from scripts.build_rss import build_rss
-except ModuleNotFoundError:
-    from build_rss import build_rss
 
-
-def cleanup(index_path: str, repo_link: str, feed_path: str) -> int:
+def cleanup(index_path: str) -> int:
     now = dt.datetime.now(ZoneInfo("UTC"))
 
     with open(index_path, "r", encoding="utf-8") as f:
@@ -42,18 +37,9 @@ def cleanup(index_path: str, repo_link: str, feed_path: str) -> int:
     with open(index_path, "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=2)
 
-    build_rss(index_path=index_path,
-              output_path=feed_path,
-              repo_link=repo_link)
     return removed_count
 
 
 if __name__ == "__main__":
-    repository = os.getenv("GITHUB_REPOSITORY", "")
-    repo_link = f"https://github.com/{repository}" if repository else "https://github.com"
-    deleted = cleanup(
-        index_path="reports/index.json",
-        repo_link=repo_link,
-        feed_path="feed/rss.xml",
-    )
+    deleted = cleanup(index_path="reports/index.json")
     print(f"cleanup_deleted={deleted}")

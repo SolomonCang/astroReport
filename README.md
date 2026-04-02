@@ -8,19 +8,17 @@
 - 使用 OpenAI 兼容接口自动生成中文完整报告与精简摘要（支持自定义 endpoint）
 - 完整报告写入仓库，云端保留 10 天
 - 每天通过 Resend 邮件发送精简版，含完整版链接与论文链接
-- 生成 RSS 2.0 Feed，推送到仓库供 Zotero 自动更新
 
 ## 目录
 
 - .github/workflows/daily-report.yml: 每日主流程
-- .github/workflows/manual-test-report.yml: 手动即时测试流程
+- .github/workflows/manual-test-report.yml: 手动邮件测试流程
 - .github/workflows/cleanup-report.yml: 过期清理流程
 - config/arxiv.json: 抓取配置
 - skill.md: LLM 摘要重点指令
 - scripts/run_daily.py: 主入口
 - scripts/cleanup_reports.py: 清理入口
 - reports/index.json: 报告索引
-- feed/rss.xml: RSS 输出
 
 ## 1. 配置 GitHub Secrets
 
@@ -50,23 +48,16 @@ OPENAI_API_BASE 示例：
 
 ## 3. 手动测试
 
-进入 Actions 页面，手动运行 Manual Test Report (Immediate)。
+进入 Actions 页面，手动运行 Manual Email Test。
 
-该流程会立即执行与日常任务相同的主入口（`python -m scripts.run_daily`），即：
+该流程会直接发送一封测试邮件，用于验证 Resend 密钥、发件邮箱和收件邮箱配置是否可用。
 
-- 抓取当天窗口内文献
-- 重新生成并覆盖当天 `reports/YYYY-MM-DD.md` 与 `reports/YYYY-MM-DD.digest.md`
-- 更新 `reports/index.json` 和 `feed/rss.xml`
-- 尝试发送当日邮件
-- 自动提交并推送产物变更
+
+运行成功后会在日志中看到 `manual email test sent`。
 
 运行成功后检查：
 
-- reports/YYYY-MM-DD.md
-- reports/YYYY-MM-DD.digest.md
-- reports/index.json
-- feed/rss.xml
-- data/last_run.json
+- 收件邮箱是否收到测试邮件
 
 ## 4. 摘要重点（skill.md）
 
@@ -78,18 +69,11 @@ OPENAI_API_BASE 示例：
 - 磁活动
 - 与以上两者相关的系外行星研究
 
-## 5. Zotero 订阅
+## 5. 10天自动删除
 
-使用仓库中的 RSS 地址进行订阅：
-
-- 若仓库公开：可直接使用 raw 链接
-- 若仓库私有：建议通过你自己的可访问通道订阅（例如私有代理或同步到可访问位置）
-
-## 6. 10天自动删除
-
-Cleanup Expired Reports 工作流每天运行一次，删除超期报告并重建 feed。
+Cleanup Expired Reports 工作流每天运行一次，删除超期报告。
 
 ## 说明
 
 - 当前是单收件人模式，收件邮箱通过 REPORT_RECIPIENT_EMAIL 控制
-- 邮件发送失败不会阻塞报告和 RSS 产出
+- 邮件发送失败不会阻塞报告产出

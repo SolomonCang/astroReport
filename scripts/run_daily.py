@@ -7,13 +7,11 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 try:
-    from scripts.build_rss import build_rss
     from scripts.fetch_arxiv import fetch_papers
     from scripts.render_report import render_digest, render_full_report
     from scripts.send_email_resend import build_digest_html, send_digest_email
     from scripts.summarize_openai import summarize_papers
 except ModuleNotFoundError:
-    from build_rss import build_rss
     from fetch_arxiv import fetch_papers
     from render_report import render_digest, render_full_report
     from send_email_resend import build_digest_html, send_digest_email
@@ -74,8 +72,6 @@ def main() -> int:
 
     repository = os.getenv("GITHUB_REPOSITORY", "")
     base_blob = f"https://github.com/{repository}/blob/main" if repository else "https://github.com"
-    repo_link = f"https://github.com/{repository}" if repository else "https://github.com"
-
     report_rel = f"reports/{report_date}.md"
     digest_rel = f"reports/{report_date}.digest.md"
     report_url = f"{base_blob}/{report_rel}"
@@ -130,10 +126,6 @@ def main() -> int:
                               key=lambda x: x.get("created_at", ""),
                               reverse=True)
     _save_index(index_path, index)
-
-    build_rss(index_path=index_path,
-              output_path="feed/rss.xml",
-              repo_link=repo_link)
 
     resend_api_key = os.getenv("RESEND_API_KEY", "")
     recipient = os.getenv("REPORT_RECIPIENT_EMAIL", "")
