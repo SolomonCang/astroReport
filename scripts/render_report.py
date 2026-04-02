@@ -54,17 +54,20 @@ def render_digest(
     summaries: dict[str, dict[str, Any]],
     report_url: str,
 ) -> str:
+    paper_count = len(papers)
     lines = [
         f"# astroReport 精简版 - {report_date}",
         "",
         global_summary,
         "",
+        f"共收录 {paper_count} 篇文献。",
+        "",
         f"完整版: {report_url}",
         "",
-        "## 今日前10篇",
+        "## 今日文献",
     ]
 
-    for paper in papers[:10]:
+    for paper in papers:
         sid = paper.get("id", "")
         sitem = summaries.get(sid, {})
         lines.extend([

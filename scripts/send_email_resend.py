@@ -42,7 +42,7 @@ def send_digest_email(
 def build_digest_html(report_date: str, report_url: str, digest_text: str,
                       top_links: list[str]) -> str:
     links_html = "".join(
-        [f'<li><a href="{url}">{url}</a></li>' for url in top_links[:10]])
+        [f'<li><a href="{url}">{url}</a></li>' for url in top_links])
     digest_html = digest_text.replace("\n", "<br/>")
     return (f"<h2>astroReport 精简日报 - {report_date}</h2>"
             f"<p><a href=\"{report_url}\">点击查看完整版报告</a></p>"
