@@ -2,9 +2,22 @@
 <rss version="2.0">
   <channel>
     <title>astroReport Daily Feed</title>
-    <link>https://github.com</link>
+    <link>https://github.com/SolomonCang/astroReport</link>
     <description>Daily arXiv astronomy reports for Zotero.</description>
     <language>zh-cn</language>
+    <item>
+      <title>astroReport 日报 2026-04-02</title>
+      <link>https://github.com/SolomonCang/astroReport/blob/main/reports/2026-04-02.md</link>
+      <guid>astroreport-2026-04-02</guid>
+      <pubDate>Thu, 02 Apr 2026 00:56:27 +0000</pubDate>
+      <description>今日文献已更新。以下为自动生成的精简摘要。
+Top papers:
+https://arxiv.org/abs/2603.30029v1
+https://arxiv.org/abs/2603.29963v1
+https://arxiv.org/abs/2603.29947v1
+https://arxiv.org/abs/2603.29912v1
+https://arxiv.org/abs/2603.29899v1</description>
+    </item>
     <item>
       <title>astroReport 日报 2026-04-01</title>
       <link>https://github.com/reports/2026-04-01.md</link>
