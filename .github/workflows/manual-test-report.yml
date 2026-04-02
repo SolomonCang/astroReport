@@ -31,8 +31,24 @@ jobs:
         run: |
           python - <<'PY'
           import datetime as dt
+          import json
+          import os
+          import urllib.error
+          import urllib.request
 
-          from scripts.send_email_resend import send_digest_email
+          resend_api_key = os.getenv("RESEND_API_KEY", "")
+          from_email = os.getenv("RESEND_FROM_EMAIL", "")
+          to_email = os.getenv("REPORT_RECIPIENT_EMAIL", "")
+
+          missing = [
+            key for key, value in {
+              "RESEND_API_KEY": resend_api_key,
+              "RESEND_FROM_EMAIL": from_email,
+              "REPORT_RECIPIENT_EMAIL": to_email,
+            }.items() if not value
+          ]
+          if missing:
+            raise SystemExit(f"missing required env: {', '.join(missing)}")
 
           now = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
           subject = f"[astroReport] Manual Email Test - {now}"
@@ -42,16 +58,35 @@ jobs:
               "<p>如果你收到这封邮件，说明 Resend 凭据、发件域名和收件配置可用。</p>"
           )
 
-          ok = send_digest_email(
-              api_key="${{ secrets.RESEND_API_KEY }}",
-              from_email="${{ secrets.RESEND_FROM_EMAIL }}",
-              to_email="${{ secrets.REPORT_RECIPIENT_EMAIL }}",
-              subject=subject,
-              html_body=html,
+          payload = {
+            "from": from_email,
+            "to": [to_email],
+            "subject": subject,
+            "html": html,
+          }
+          req = urllib.request.Request(
+            "https://api.resend.com/emails",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+              "Content-Type": "application/json",
+              "Authorization": f"Bearer {resend_api_key}",
+            },
+            method="POST",
           )
 
-          if not ok:
-              raise SystemExit("manual email test failed")
+          try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+              body = resp.read().decode("utf-8", errors="replace")
+              print(f"resend_status={resp.status}")
+              print(f"resend_response={body}")
+          except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", errors="replace")
+            print(f"resend_status={e.code}")
+            print(f"resend_response={body}")
+            raise SystemExit("manual email test failed")
+          except Exception as e:
+            print(f"resend_error={type(e).__name__}: {e}")
+            raise SystemExit("manual email test failed")
 
           print("manual email test sent")
           PY
