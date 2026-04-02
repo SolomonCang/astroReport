@@ -63,13 +63,12 @@ def _parse_entry(entry: ET.Element) -> dict[str, Any]:
     }
 
 
-def fetch_papers(categories: list[str], max_results: int,
-                 lookback_hours: int) -> list[dict[str, Any]]:
-    query = _build_query(categories)
+def _request_entries(query: str, start: int,
+                     page_size: int) -> list[ET.Element]:
     params = {
         "search_query": query,
-        "start": 0,
-        "max_results": max_results,
+        "start": start,
+        "max_results": page_size,
         "sortBy": "submittedDate",
         "sortOrder": "descending",
     }
@@ -81,6 +80,7 @@ def fetch_papers(categories: list[str], max_results: int,
             "User-Agent": "astroReportBot/1.0 (+https://github.com)",
         },
     )
+
     content = b""
     last_error: Exception | None = None
     for attempt in range(3):
@@ -97,23 +97,48 @@ def fetch_papers(categories: list[str], max_results: int,
         return []
 
     root = ET.fromstring(content)
-    entries = root.findall("atom:entry", ATOM_NS)
+    return root.findall("atom:entry", ATOM_NS)
+
+
+def fetch_papers(categories: list[str], max_results: int,
+                 lookback_hours: int) -> list[dict[str, Any]]:
+    query = _build_query(categories)
+    page_size = max(1, int(max_results))
 
     now_utc = dt.datetime.now(dt.timezone.utc)
     cutoff = now_utc - dt.timedelta(hours=lookback_hours)
 
     papers: list[dict[str, Any]] = []
-    for entry in entries:
-        paper = _parse_entry(entry)
-        if not paper["published"]:
-            continue
-        try:
-            published_at = dt.datetime.fromisoformat(
-                paper["published"].replace("Z", "+00:00"))
-        except ValueError:
-            continue
-        if published_at >= cutoff:
-            papers.append(paper)
+    start = 0
+    # Cap pages to protect the workflow from pathological loops.
+    max_pages = 20
+
+    for _ in range(max_pages):
+        entries = _request_entries(query=query,
+                                   start=start,
+                                   page_size=page_size)
+        if not entries:
+            break
+
+        reached_cutoff = False
+        for entry in entries:
+            paper = _parse_entry(entry)
+            if not paper["published"]:
+                continue
+            try:
+                published_at = dt.datetime.fromisoformat(
+                    paper["published"].replace("Z", "+00:00"))
+            except ValueError:
+                continue
+            if published_at >= cutoff:
+                papers.append(paper)
+                continue
+            reached_cutoff = True
+            break
+
+        if reached_cutoff or len(entries) < page_size:
+            break
+        start += page_size
 
     dedup: dict[str, dict[str, Any]] = {}
     for paper in papers:

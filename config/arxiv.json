@@ -2,5 +2,5 @@
   "categories": ["astro-ph.EP", "astro-ph.SR"],
   "max_results": 80,
   "lookback_hours": 36,
-  "max_papers_in_report": 25
+  "dedup_lookback_days": 15
 }

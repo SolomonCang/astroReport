@@ -4,9 +4,9 @@
 
 ## 功能
 
-- 每天北京时间 08:30 自动抓取 arXiv 指定子分类
+- 每个工作日北京时间 10:00 自动抓取 arXiv 指定子分类（周末不触发）
 - 使用 OpenAI 兼容接口自动生成中文完整报告与精简摘要（支持自定义 endpoint）
-- 完整报告写入仓库，云端保留 10 天
+- 完整报告写入仓库，云端保留 15 天（约10个工作日）
 - 每天通过 Resend 邮件发送精简版，含完整版链接与论文链接
 
 ## 目录
@@ -14,7 +14,7 @@
 - .github/workflows/daily-report.yml: 每日主流程
 - .github/workflows/manual-test-report.yml: 手动邮件测试流程
 - .github/workflows/cleanup-report.yml: 过期清理流程
-- config/arxiv.json: 抓取配置
+- config/config.json: 全局系统配置（arXiv 抓取 + 日报行为）
 - config/focus_area.md: LLM 摘要重点指令
 - scripts/run_daily.py: 主入口
 - scripts/cleanup_reports.py: 清理入口
@@ -37,14 +37,31 @@ OPENAI_API_BASE 示例：
 - `https://your-provider.example.com/v1`
 - `https://your-provider.example.com/v1/chat/completions`
 
-## 2. 修改抓取范围
+## 2. 修改配置
 
-编辑 config/arxiv.json：
+编辑 `config/config.json`，包含 arXiv 抓取与日报系统的全部设置：
 
-- categories: arXiv 子分类数组
-- max_results: 最大抓取条数
-- lookback_hours: 回看时间窗口
-- max_papers_in_report: 报告最多收录篇数
+```json
+{
+  "arxiv": {
+    "categories": ["astro-ph.EP", "astro-ph.SR"],
+    "max_results": 80,
+    "lookback_hours": 36
+  },
+  "report": {
+    "dedup_lookback_days": 15,
+    "retention_days": 15
+  }
+}
+```
+
+字段说明：
+
+- `arxiv.categories`: arXiv 子分类数组
+- `arxiv.max_results`: 每页抓取条数（脚本会分页拉取直到覆盖回看窗口）
+- `arxiv.lookback_hours`: 抓取时间回看窗口（小时）
+- `report.dedup_lookback_days`: 与历史日报去重的回看天数（默认15）
+- `report.retention_days`: 报告保留天数，超期后由清理工作流删除（默认15）
 
 ## 3. 手动测试
 
@@ -71,9 +88,11 @@ OPENAI_API_BASE 示例：
 - 磁活动
 - 与以上两者相关的系外行星研究
 
-## 5. 10天自动删除
+## 5. 15天自动删除
 
-Cleanup Expired Reports 工作流每天运行一次，删除超期报告。
+Cleanup Expired Reports 工作流每天北京时间 10:20 运行一次，删除超过15天的报告（约10个工作日）。
+
+清理脚本优先使用 `expire_at` 判定，若时间字段异常则会回退到 `created_at + 15天`（再回退到 `date + 15天`）进行删除判断。
 
 ## 说明
 

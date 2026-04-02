@@ -3,8 +3,14 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+import re
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+CONFIG_PATH = "config/config.json"
+DEFAULT_RETENTION_DAYS = 15
+DEFAULT_DEDUP_LOOKBACK_DAYS = 15
+VERSION_SUFFIX_RE = re.compile(r"v\d+$")
 
 try:
     from scripts.fetch_arxiv import fetch_papers
@@ -42,19 +48,92 @@ def _save_index(path: str, index: dict) -> None:
         json.dump(index, f, ensure_ascii=False, indent=2)
 
 
+def _normalize_paper_key(value: str) -> str:
+    text = value.strip().rstrip("/")
+    if not text:
+        return ""
+    if "/abs/" in text:
+        text = text.split("/abs/", 1)[1]
+    elif "/pdf/" in text:
+        text = text.split("/pdf/", 1)[1]
+    if text.endswith(".pdf"):
+        text = text[:-4]
+    text = VERSION_SUFFIX_RE.sub("", text)
+    return text
+
+
+def _paper_key(paper: dict) -> str:
+    for field in ("id", "link", "pdf_link"):
+        key = _normalize_paper_key(str(paper.get(field, "")))
+        if key:
+            return key
+    return ""
+
+
+def _collect_recent_paper_keys(index: dict, report_date: str,
+                               lookback_days: int) -> set[str]:
+    today = dt.date.fromisoformat(report_date)
+    cutoff = today - dt.timedelta(days=lookback_days)
+    keys: set[str] = set()
+
+    for item in index.get("reports", []):
+        date_text = str(item.get("date", "")).strip()
+        try:
+            item_date = dt.date.fromisoformat(date_text)
+        except ValueError:
+            continue
+        if item_date >= today or item_date < cutoff:
+            continue
+
+        links = item.get("paper_links", [])
+        if not isinstance(links, list):
+            continue
+        for link in links:
+            key = _normalize_paper_key(str(link))
+            if key:
+                keys.add(key)
+
+    return keys
+
+
 def main() -> int:
     shanghai_now = dt.datetime.now(ZoneInfo("Asia/Shanghai"))
     now_utc = dt.datetime.now(dt.timezone.utc)
     report_date = shanghai_now.strftime("%Y-%m-%d")
 
-    cfg = _load_config("config/arxiv.json")
+    cfg = _load_config(CONFIG_PATH)
+    arxiv_cfg = cfg.get("arxiv", {})
+    report_cfg = cfg.get("report", {})
+    dedup_lookback_days = int(
+        report_cfg.get("dedup_lookback_days", DEFAULT_DEDUP_LOOKBACK_DAYS))
+    retention_days = int(
+        report_cfg.get("retention_days", DEFAULT_RETENTION_DAYS))
+    index_path = "reports/index.json"
+    index = _load_index(index_path)
+    reports = index.get("reports", [])
 
     papers = fetch_papers(
-        categories=cfg.get("categories", []),
-        max_results=int(cfg.get("max_results", 80)),
-        lookback_hours=int(cfg.get("lookback_hours", 36)),
+        categories=arxiv_cfg.get("categories", []),
+        max_results=int(arxiv_cfg.get("max_results", 80)),
+        lookback_hours=int(arxiv_cfg.get("lookback_hours", 36)),
     )
-    papers = papers[:int(cfg.get("max_papers_in_report", 25))]
+    fetched_count = len(papers)
+
+    history_keys = _collect_recent_paper_keys(
+        index=index,
+        report_date=report_date,
+        lookback_days=dedup_lookback_days)
+    deduped_papers = []
+    removed_duplicates = 0
+    for paper in papers:
+        key = _paper_key(paper)
+        if key and key in history_keys:
+            removed_duplicates += 1
+            continue
+        deduped_papers.append(paper)
+        if key:
+            history_keys.add(key)
+    papers = deduped_papers
 
     openai_key = os.getenv("OPENAI_API_KEY", "")
     openai_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
@@ -107,11 +186,7 @@ def main() -> int:
     _save_text(report_rel, full_text)
     _save_text(digest_rel, digest_text)
 
-    expire_at = now_utc + dt.timedelta(days=10)
-
-    index_path = "reports/index.json"
-    index = _load_index(index_path)
-    reports = index.get("reports", [])
+    expire_at = now_utc + dt.timedelta(days=retention_days)
 
     guid = f"astroreport-{report_date}"
     report_entry = {
@@ -161,6 +236,9 @@ def main() -> int:
 
     status = {
         "report_date": report_date,
+        "fetched_papers": fetched_count,
+        "removed_duplicates": removed_duplicates,
+        "dedup_lookback_days": dedup_lookback_days,
         "papers": len(papers),
         "email_sent": email_ok,
         "generated_at": now_utc.isoformat(),
@@ -169,6 +247,8 @@ def main() -> int:
                json.dumps(status, ensure_ascii=False, indent=2))
 
     print(f"report_date={report_date}")
+    print(f"fetched_papers={fetched_count}")
+    print(f"removed_duplicates={removed_duplicates}")
     print(f"papers={len(papers)}")
     print(f"email_sent={email_ok}")
     return 0

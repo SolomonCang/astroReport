@@ -1,0 +1,11 @@
+{
+  "arxiv": {
+    "categories": ["astro-ph.EP", "astro-ph.SR"],
+    "max_results": 200,
+    "lookback_hours": 36
+  },
+  "report": {
+    "dedup_lookback_days": 15,
+    "retention_days": 5
+  }
+}

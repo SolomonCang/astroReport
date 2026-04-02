@@ -2,7 +2,7 @@ name: Cleanup Expired Reports
 
 on:
   schedule:
-    - cron: "0 2 * * *"
+    - cron: "20 2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Delete reports older than 10 days
+      - name: Delete reports older than 15 days
         run: |
           python -m scripts.cleanup_reports
 
