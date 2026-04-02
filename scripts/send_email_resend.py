@@ -27,6 +27,8 @@ def send_digest_email(
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "astroReport-mailer/1.0 (+github-actions)",
             "Authorization": f"Bearer {api_key}",
         },
         method="POST",

@@ -50,7 +50,7 @@ jobs:
           if missing:
             raise SystemExit(f"missing required env: {', '.join(missing)}")
 
-          now = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+          now = dt.datetime.now(dt.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
           subject = f"[astroReport] Manual Email Test - {now}"
           html = (
               "<h2>astroReport 邮件测试</h2>"
@@ -69,6 +69,8 @@ jobs:
             data=json.dumps(payload).encode("utf-8"),
             headers={
               "Content-Type": "application/json",
+                "Accept": "application/json",
+                "User-Agent": "astroReport-mail-test/1.0 (+github-actions)",
               "Authorization": f"Bearer {resend_api_key}",
             },
             method="POST",
