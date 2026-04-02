@@ -15,7 +15,7 @@
 - .github/workflows/manual-test-report.yml: 手动邮件测试流程
 - .github/workflows/cleanup-report.yml: 过期清理流程
 - config/arxiv.json: 抓取配置
-- skill.md: LLM 摘要重点指令
+- config/focus_area.md: LLM 摘要重点指令
 - scripts/run_daily.py: 主入口
 - scripts/cleanup_reports.py: 清理入口
 - reports/index.json: 报告索引
@@ -59,9 +59,11 @@ OPENAI_API_BASE 示例：
 
 - 收件邮箱是否收到测试邮件
 
-## 4. 摘要重点（skill.md）
+## 4. 摘要重点（config/focus_area.md）
 
-总结脚本会自动读取仓库根目录的 `skill.md`（若不存在则尝试 `config/skill.md`），并把内容注入到 LLM 提示词中作为重点方向。
+总结脚本会优先读取 `config/focus_area.md`（兼容旧路径 `config/skill.md` 和 `skill.md`），并把内容注入到 LLM 提示词中作为重点方向。
+
+全局总结会结合这些重点方向，并在开头标注相关文献编号，格式示例：`[相关文献编号: 2, 5, 9]`，用于快速定位下方条目。
 
 当前默认重点包含：
 

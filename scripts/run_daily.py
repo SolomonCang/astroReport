@@ -69,6 +69,19 @@ def main() -> int:
         for x in summary_payload.get("items", [])
     }
     global_summary = summary_payload.get("global_summary", "今日无更新。")
+    related_ids = summary_payload.get("related_ids", [])
+
+    id_to_index = {
+        paper.get("id", ""): idx
+        for idx, paper in enumerate(papers, start=1)
+        if paper.get("id", "")
+    }
+    related_indices = []
+    if isinstance(related_ids, list):
+        related_indices = [id_to_index[rid] for rid in related_ids if rid in id_to_index]
+    if related_indices:
+        prefix = "[相关文献编号: " + ", ".join(str(i) for i in related_indices) + "]"
+        global_summary = f"{prefix} {global_summary}".strip()
 
     repository = os.getenv("GITHUB_REPOSITORY", "")
     base_blob = f"https://github.com/{repository}/blob/main" if repository else "https://github.com"
@@ -135,7 +148,6 @@ def main() -> int:
         report_date=report_date,
         report_url=report_url,
         digest_text=digest_text,
-        top_links=report_entry["paper_links"],
     )
 
     email_ok = send_digest_email(
