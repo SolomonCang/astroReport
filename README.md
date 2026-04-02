@@ -13,8 +13,10 @@
 ## 目录
 
 - .github/workflows/daily-report.yml: 每日主流程
+- .github/workflows/manual-test-report.yml: 手动即时测试流程
 - .github/workflows/cleanup-report.yml: 过期清理流程
 - config/arxiv.json: 抓取配置
+- skill.md: LLM 摘要重点指令
 - scripts/run_daily.py: 主入口
 - scripts/cleanup_reports.py: 清理入口
 - reports/index.json: 报告索引
@@ -48,7 +50,15 @@ OPENAI_API_BASE 示例：
 
 ## 3. 手动测试
 
-进入 Actions 页面，手动运行 Daily arXiv Report。
+进入 Actions 页面，手动运行 Manual Test Report (Immediate)。
+
+该流程会立即执行与日常任务相同的主入口（`python -m scripts.run_daily`），即：
+
+- 抓取当天窗口内文献
+- 重新生成并覆盖当天 `reports/YYYY-MM-DD.md` 与 `reports/YYYY-MM-DD.digest.md`
+- 更新 `reports/index.json` 和 `feed/rss.xml`
+- 尝试发送当日邮件
+- 自动提交并推送产物变更
 
 运行成功后检查：
 
@@ -58,14 +68,24 @@ OPENAI_API_BASE 示例：
 - feed/rss.xml
 - data/last_run.json
 
-## 4. Zotero 订阅
+## 4. 摘要重点（skill.md）
+
+总结脚本会自动读取仓库根目录的 `skill.md`（若不存在则尝试 `config/skill.md`），并把内容注入到 LLM 提示词中作为重点方向。
+
+当前默认重点包含：
+
+- 恒星磁场
+- 磁活动
+- 与以上两者相关的系外行星研究
+
+## 5. Zotero 订阅
 
 使用仓库中的 RSS 地址进行订阅：
 
 - 若仓库公开：可直接使用 raw 链接
 - 若仓库私有：建议通过你自己的可访问通道订阅（例如私有代理或同步到可访问位置）
 
-## 5. 10天自动删除
+## 6. 10天自动删除
 
 Cleanup Expired Reports 工作流每天运行一次，删除超期报告并重建 feed。
 

@@ -2,9 +2,26 @@ from __future__ import annotations
 
 import json
 import urllib.request
+from pathlib import Path
 from typing import Any
 
 OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
+
+
+def _load_skill_text() -> str:
+    candidates = [
+        Path("skill.md"),
+        Path("config/skill.md"),
+    ]
+    for path in candidates:
+        try:
+            if path.exists():
+                text = path.read_text(encoding="utf-8").strip()
+                if text:
+                    return text
+        except Exception:
+            continue
+    return ""
 
 
 def _build_chat_url(api_base: str | None) -> str:
@@ -63,8 +80,13 @@ def summarize_papers(
             "link": paper.get("link", ""),
         })
 
+    skill_text = _load_skill_text()
+
     prompt = {
-        "task": "你是科研情报助手。请为天文文献生成中文日报摘要。",
+        "task":
+        "你是科研情报助手。请为天文文献生成中文日报摘要。",
+        "focus_skill":
+        skill_text,
         "format": {
             "global_summary":
             "2-3句中文概览",
@@ -78,8 +100,10 @@ def summarize_papers(
             "严格返回JSON对象，不要markdown",
             "每篇摘要不超过120字",
             "关键词避免过泛词",
+            "如果 focus_skill 非空，优先按其要求提取重点信息",
         ],
-        "papers": compact,
+        "papers":
+        compact,
     }
 
     payload = {
