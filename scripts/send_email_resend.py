@@ -39,12 +39,12 @@ def send_digest_email(
         return False
 
 
-def build_digest_html(report_date: str, report_url: str, digest_text: str, top_links: list[str]) -> str:
-    links_html = "".join([f'<li><a href="{url}">{url}</a></li>' for url in top_links[:10]])
+def build_digest_html(report_date: str, report_url: str, digest_text: str,
+                      top_links: list[str]) -> str:
+    links_html = "".join(
+        [f'<li><a href="{url}">{url}</a></li>' for url in top_links[:10]])
     digest_html = digest_text.replace("\n", "<br/>")
-    return (
-        f"<h2>astroReport 精简日报 - {report_date}</h2>"
-        f"<p><a href=\"{report_url}\">点击查看完整版报告</a></p>"
-        f"<p>{digest_html}</p>"
-        f"<h3>论文链接</h3><ul>{links_html}</ul>"
-    )
+    return (f"<h2>astroReport 精简日报 - {report_date}</h2>"
+            f"<p><a href=\"{report_url}\">点击查看完整版报告</a></p>"
+            f"<p>{digest_html}</p>"
+            f"<h3>论文链接</h3><ul>{links_html}</ul>")

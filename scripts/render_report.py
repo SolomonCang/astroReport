@@ -24,29 +24,26 @@ def render_full_report(
     for idx, paper in enumerate(papers, start=1):
         sid = paper.get("id", "")
         sitem = summaries.get(sid, {})
-        keyword_text = "、".join(sitem.get("keywords", [])) if sitem.get("keywords") else "无"
+        keyword_text = "、".join(sitem.get(
+            "keywords", [])) if sitem.get("keywords") else "无"
         authors = ", ".join(paper.get("authors", [])[:6]) or "Unknown"
-        lines.extend(
-            [
-                f"### {idx}. {paper.get('title', 'Untitled')}",
-                f"- Authors: {authors}",
-                f"- Published: {paper.get('published', '')}",
-                f"- arXiv: {paper.get('link', '')}",
-                f"- PDF: {paper.get('pdf_link', '')}",
-                f"- Keywords: {keyword_text}",
-                f"- Summary: {sitem.get('summary', '')}",
-                "",
-            ]
-        )
-
-    lines.extend(
-        [
-            "## 元数据",
-            f"- Generated At (UTC): {dt.datetime.now(dt.timezone.utc).isoformat()}",
-            "- Generator: GitHub Actions + OpenAI",
+        lines.extend([
+            f"### {idx}. {paper.get('title', 'Untitled')}",
+            f"- Authors: {authors}",
+            f"- Published: {paper.get('published', '')}",
+            f"- arXiv: {paper.get('link', '')}",
+            f"- PDF: {paper.get('pdf_link', '')}",
+            f"- Keywords: {keyword_text}",
+            f"- Summary: {sitem.get('summary', '')}",
             "",
-        ]
-    )
+        ])
+
+    lines.extend([
+        "## 元数据",
+        f"- Generated At (UTC): {dt.datetime.now(dt.timezone.utc).isoformat()}",
+        "- Generator: GitHub Actions + OpenAI",
+        "",
+    ])
     return "\n".join(lines)
 
 
@@ -70,12 +67,10 @@ def render_digest(
     for paper in papers[:10]:
         sid = paper.get("id", "")
         sitem = summaries.get(sid, {})
-        lines.extend(
-            [
-                f"- {paper.get('title', 'Untitled')}",
-                f"  - 摘要: {sitem.get('summary', '')}",
-                f"  - 链接: {paper.get('link', '')}",
-            ]
-        )
+        lines.extend([
+            f"- {paper.get('title', 'Untitled')}",
+            f"  - 摘要: {sitem.get('summary', '')}",
+            f"  - 链接: {paper.get('link', '')}",
+        ])
 
     return "\n".join(lines)

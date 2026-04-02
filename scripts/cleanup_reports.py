@@ -42,7 +42,9 @@ def cleanup(index_path: str, repo_link: str, feed_path: str) -> int:
     with open(index_path, "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=2)
 
-    build_rss(index_path=index_path, output_path=feed_path, repo_link=repo_link)
+    build_rss(index_path=index_path,
+              output_path=feed_path,
+              repo_link=repo_link)
     return removed_count
 
 

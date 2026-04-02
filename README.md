@@ -5,7 +5,7 @@
 ## 功能
 
 - 每天北京时间 08:30 自动抓取 arXiv 指定子分类
-- 使用 OpenAI 自动生成中文完整报告与精简摘要
+- 使用 OpenAI 兼容接口自动生成中文完整报告与精简摘要（支持自定义 endpoint）
 - 完整报告写入仓库，云端保留 10 天
 - 每天通过 Resend 邮件发送精简版，含完整版链接与论文链接
 - 生成 RSS 2.0 Feed，推送到仓库供 Zotero 自动更新
@@ -26,9 +26,16 @@
 
 - OPENAI_API_KEY
 - OPENAI_MODEL: 可选，默认 gpt-4o-mini
+- OPENAI_API_BASE: 可选，类 OpenAI 服务 endpoint/base URL
 - RESEND_API_KEY
 - RESEND_FROM_EMAIL: 例如 noreply@你的域名
 - REPORT_RECIPIENT_EMAIL: 你的邮箱
+
+OPENAI_API_BASE 示例：
+
+- `https://api.openai.com/v1`
+- `https://your-provider.example.com/v1`
+- `https://your-provider.example.com/v1/chat/completions`
 
 ## 2. 修改抓取范围
 

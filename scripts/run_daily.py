@@ -56,13 +56,20 @@ def main() -> int:
         max_results=int(cfg.get("max_results", 80)),
         lookback_hours=int(cfg.get("lookback_hours", 36)),
     )
-    papers = papers[: int(cfg.get("max_papers_in_report", 25))]
+    papers = papers[:int(cfg.get("max_papers_in_report", 25))]
 
     openai_key = os.getenv("OPENAI_API_KEY", "")
     openai_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    summary_payload = summarize_papers(papers=papers, model=openai_model, api_key=openai_key)
+    openai_api_base = os.getenv("OPENAI_API_BASE", "")
+    summary_payload = summarize_papers(papers=papers,
+                                       model=openai_model,
+                                       api_key=openai_key,
+                                       api_base=openai_api_base)
 
-    summary_items = {x.get("id", ""): x for x in summary_payload.get("items", [])}
+    summary_items = {
+        x.get("id", ""): x
+        for x in summary_payload.get("items", [])
+    }
     global_summary = summary_payload.get("global_summary", "今日无更新。")
 
     repository = os.getenv("GITHUB_REPOSITORY", "")
@@ -119,10 +126,14 @@ def main() -> int:
     if not replaced:
         reports.append(report_entry)
 
-    index["reports"] = sorted(reports, key=lambda x: x.get("created_at", ""), reverse=True)
+    index["reports"] = sorted(reports,
+                              key=lambda x: x.get("created_at", ""),
+                              reverse=True)
     _save_index(index_path, index)
 
-    build_rss(index_path=index_path, output_path="feed/rss.xml", repo_link=repo_link)
+    build_rss(index_path=index_path,
+              output_path="feed/rss.xml",
+              repo_link=repo_link)
 
     resend_api_key = os.getenv("RESEND_API_KEY", "")
     recipient = os.getenv("REPORT_RECIPIENT_EMAIL", "")
@@ -149,7 +160,8 @@ def main() -> int:
         "email_sent": email_ok,
         "generated_at": now_utc.isoformat(),
     }
-    _save_text("data/last_run.json", json.dumps(status, ensure_ascii=False, indent=2))
+    _save_text("data/last_run.json",
+               json.dumps(status, ensure_ascii=False, indent=2))
 
     print(f"report_date={report_date}")
     print(f"papers={len(papers)}")

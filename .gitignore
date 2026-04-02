@@ -1,0 +1,46 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build and packaging artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Local editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and local runtime temp files
+*.log
+*.tmp
+*.temp
+
+# Local secrets and environment files
+.env
+.env.*
+*.key
+*.pem
+*.p12
+
+# Notebook checkpoints and temporary exports
+*.ipynb_checkpoints

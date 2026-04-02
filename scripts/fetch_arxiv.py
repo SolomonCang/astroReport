@@ -16,11 +16,15 @@ def _build_query(categories: list[str]) -> str:
 
 
 def _parse_entry(entry: ET.Element) -> dict[str, Any]:
-    title = (entry.findtext("atom:title", default="", namespaces=ATOM_NS) or "").strip()
-    summary = (entry.findtext("atom:summary", default="", namespaces=ATOM_NS) or "").strip()
+    title = (entry.findtext("atom:title", default="", namespaces=ATOM_NS)
+             or "").strip()
+    summary = (entry.findtext("atom:summary", default="", namespaces=ATOM_NS)
+               or "").strip()
     entry_id = entry.findtext("atom:id", default="", namespaces=ATOM_NS) or ""
-    published = entry.findtext("atom:published", default="", namespaces=ATOM_NS) or ""
-    updated = entry.findtext("atom:updated", default="", namespaces=ATOM_NS) or ""
+    published = entry.findtext(
+        "atom:published", default="", namespaces=ATOM_NS) or ""
+    updated = entry.findtext("atom:updated", default="",
+                             namespaces=ATOM_NS) or ""
 
     authors: list[str] = []
     for author in entry.findall("atom:author", ATOM_NS):
@@ -41,7 +45,10 @@ def _parse_entry(entry: ET.Element) -> dict[str, Any]:
         if title_attr == "pdf" or "pdf" in href:
             pdf_link = href
 
-    categories = [cat.attrib.get("term", "") for cat in entry.findall("atom:category", ATOM_NS)]
+    categories = [
+        cat.attrib.get("term", "")
+        for cat in entry.findall("atom:category", ATOM_NS)
+    ]
 
     return {
         "id": entry_id,
@@ -56,7 +63,8 @@ def _parse_entry(entry: ET.Element) -> dict[str, Any]:
     }
 
 
-def fetch_papers(categories: list[str], max_results: int, lookback_hours: int) -> list[dict[str, Any]]:
+def fetch_papers(categories: list[str], max_results: int,
+                 lookback_hours: int) -> list[dict[str, Any]]:
     query = _build_query(categories)
     params = {
         "search_query": query,
@@ -100,7 +108,8 @@ def fetch_papers(categories: list[str], max_results: int, lookback_hours: int) -
         if not paper["published"]:
             continue
         try:
-            published_at = dt.datetime.fromisoformat(paper["published"].replace("Z", "+00:00"))
+            published_at = dt.datetime.fromisoformat(
+                paper["published"].replace("Z", "+00:00"))
         except ValueError:
             continue
         if published_at >= cutoff:
@@ -110,5 +119,7 @@ def fetch_papers(categories: list[str], max_results: int, lookback_hours: int) -
     for paper in papers:
         dedup[paper["id"]] = paper
 
-    sorted_papers = sorted(dedup.values(), key=lambda x: x["published"], reverse=True)
+    sorted_papers = sorted(dedup.values(),
+                           key=lambda x: x["published"],
+                           reverse=True)
     return sorted_papers

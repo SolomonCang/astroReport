@@ -32,11 +32,11 @@
       "date": "2026-04-01",
       "title": "astroReport 日报 2026-04-01",
       "guid": "astroreport-2026-04-01",
-      "created_at": "2026-04-01T08:47:13.910912+00:00",
-      "expire_at": "2026-04-11T08:47:13.910912+00:00",
+      "created_at": "2026-04-01T15:27:32.960505+00:00",
+      "expire_at": "2026-04-11T15:27:32.960505+00:00",
       "report_path": "reports/2026-04-01.md",
       "digest_path": "reports/2026-04-01.digest.md",
-      "report_url": "https://github.com/reports/2026-04-01.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-04-01.md",
       "digest_summary": "今日没有匹配的新文献。",
       "paper_links": []
     }
