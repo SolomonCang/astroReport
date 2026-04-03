@@ -1,6 +1,35 @@
 {
   "reports": [
     {
+      "date": "2026-04-03",
+      "title": "astroReport 日报 2026-04-03",
+      "guid": "astroreport-2026-04-03",
+      "created_at": "2026-04-03T03:09:36.101272+00:00",
+      "expire_at": "2026-04-08T03:09:36.101272+00:00",
+      "report_path": "reports/2026-04-03.md",
+      "digest_path": "reports/2026-04-03.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-04-03.md",
+      "digest_summary": "[相关文献编号: 10, 4, 11, 13, 9] 本日天文文献重点关注恒星磁场与磁活动相关研究，包括小尺度发电机模型、磁重联触发的物理条件、以及磁活动对系外行星大气探测的影响。此外，涉及恒星磁场测量方法（如光谱偏振）和磁活动现象（如耀斑、CME）的观测研究也提供了重要进展。",
+      "paper_links": [
+        "https://arxiv.org/abs/2604.02332v1",
+        "https://arxiv.org/abs/2604.02242v1",
+        "https://arxiv.org/abs/2604.02111v1",
+        "https://arxiv.org/abs/2604.02065v1",
+        "https://arxiv.org/abs/2604.01927v1",
+        "https://arxiv.org/abs/2604.01847v1",
+        "https://arxiv.org/abs/2604.01806v1",
+        "https://arxiv.org/abs/2604.01783v1",
+        "https://arxiv.org/abs/2604.01774v1",
+        "https://arxiv.org/abs/2604.01718v1",
+        "https://arxiv.org/abs/2604.01672v1",
+        "https://arxiv.org/abs/2604.01628v1",
+        "https://arxiv.org/abs/2604.01389v1",
+        "https://arxiv.org/abs/2604.01323v1",
+        "https://arxiv.org/abs/2604.01281v1",
+        "https://arxiv.org/abs/2604.01276v1"
+      ]
+    },
+    {
       "date": "2026-04-02",
       "title": "astroReport 日报 2026-04-02",
       "guid": "astroreport-2026-04-02",
