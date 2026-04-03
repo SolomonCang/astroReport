@@ -11,16 +11,16 @@ RESEND_URL = "https://api.resend.com/emails"
 def send_digest_email(
     api_key: str,
     from_email: str,
-    to_email: str,
+    to_emails: list[str],
     subject: str,
     html_body: str,
 ) -> bool:
-    if not api_key or not from_email or not to_email:
+    if not api_key or not from_email or not to_emails:
         return False
 
     payload = {
         "from": from_email,
-        "to": [to_email],
+        "to": to_emails,
         "subject": subject,
         "html": html_body,
     }

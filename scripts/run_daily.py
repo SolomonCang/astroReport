@@ -217,7 +217,7 @@ def main() -> int:
     _save_index(index_path, index)
 
     resend_api_key = os.getenv("RESEND_API_KEY", "")
-    recipient = os.getenv("REPORT_RECIPIENT_EMAIL", "")
+    recipients = cfg.get("mail_list", [])
     from_email = os.getenv("RESEND_FROM_EMAIL", "onboarding@resend.dev")
 
     html = build_digest_html(
@@ -229,7 +229,7 @@ def main() -> int:
     email_ok = send_digest_email(
         api_key=resend_api_key,
         from_email=from_email,
-        to_email=recipient,
+        to_emails=recipients,
         subject=f"[astroReport] {report_date} 精简日报",
         html_body=html,
     )

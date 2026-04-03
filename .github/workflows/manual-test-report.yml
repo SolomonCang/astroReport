@@ -27,7 +27,6 @@ jobs:
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
-          REPORT_RECIPIENT_EMAIL: ${{ secrets.REPORT_RECIPIENT_EMAIL }}
         run: |
           python - <<'PY'
           import datetime as dt
@@ -38,17 +37,21 @@ jobs:
 
           resend_api_key = os.getenv("RESEND_API_KEY", "")
           from_email = os.getenv("RESEND_FROM_EMAIL", "")
-          to_email = os.getenv("REPORT_RECIPIENT_EMAIL", "")
+
+          with open("config/config.json", "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+          to_emails = cfg.get("mail_list", [])
 
           missing = [
             key for key, value in {
               "RESEND_API_KEY": resend_api_key,
               "RESEND_FROM_EMAIL": from_email,
-              "REPORT_RECIPIENT_EMAIL": to_email,
             }.items() if not value
           ]
           if missing:
             raise SystemExit(f"missing required env: {', '.join(missing)}")
+          if not to_emails:
+            raise SystemExit("mail_list is empty in config/config.json")
 
           now = dt.datetime.now(dt.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
           subject = f"[astroReport] Manual Email Test - {now}"
@@ -60,7 +63,7 @@ jobs:
 
           payload = {
             "from": from_email,
-            "to": [to_email],
+            "to": to_emails,
             "subject": subject,
             "html": html,
           }
