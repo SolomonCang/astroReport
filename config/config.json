@@ -7,5 +7,9 @@
   "report": {
     "dedup_lookback_days": 15,
     "retention_days": 5
-  }
+  },
+  "mail_list": [
+    "astrocang@gmail.com",
+    "he.zhao@oca.eu"
+  ]
 }
