@@ -120,7 +120,15 @@ def fetch_papers(categories: list[str], max_results: int,
         if not entries:
             break
 
-        reached_cutoff = False
+        # Count how many new papers (published within cutoff) appear in this
+        # page.  We intentionally do NOT break on the first old entry because
+        # the API is sorted by *submittedDate*, not *published* date.  A
+        # paper revision (v2/v3/…) carries a recent submittedDate but retains
+        # the original published date, so old-published entries can appear
+        # anywhere in the list.  Only stop paging when an entire page returns
+        # zero new papers – that indicates we have truly gone past the
+        # relevant window.
+        found_in_page = 0
         for entry in entries:
             paper = _parse_entry(entry)
             if not paper["published"]:
@@ -132,11 +140,9 @@ def fetch_papers(categories: list[str], max_results: int,
                 continue
             if published_at >= cutoff:
                 papers.append(paper)
-                continue
-            reached_cutoff = True
-            break
+                found_in_page += 1
 
-        if reached_cutoff or len(entries) < page_size:
+        if found_in_page == 0 or len(entries) < page_size:
             break
         start += page_size
 
