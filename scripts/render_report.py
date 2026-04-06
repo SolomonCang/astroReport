@@ -9,6 +9,7 @@ def render_full_report(
     global_summary: str,
     papers: list[dict[str, Any]],
     summaries: dict[str, dict[str, Any]],
+    groups: list[dict[str, Any]] | None = None,
 ) -> str:
     lines = [
         f"# astroReport 日报 - {report_date}",
@@ -18,8 +19,16 @@ def render_full_report(
         "",
         f"共收录 {len(papers)} 篇文献。",
         "",
-        "## 文献条目",
     ]
+
+    if groups:
+        lines.append("## 主题分类")
+        for g in groups:
+            idx_str = "、".join(f"[{i}]" for i in g["indices"])
+            lines.append(f"- **{g['label']}**：{idx_str}")
+        lines.append("")
+
+    lines.append("## 文献条目")
 
     for idx, paper in enumerate(papers, start=1):
         sid = paper.get("id", "")
@@ -53,6 +62,7 @@ def render_digest(
     papers: list[dict[str, Any]],
     summaries: dict[str, dict[str, Any]],
     report_url: str,
+    groups: list[dict[str, Any]] | None = None,
 ) -> str:
     paper_count = len(papers)
     lines = [
@@ -64,8 +74,16 @@ def render_digest(
         "",
         f"完整版: {report_url}",
         "",
-        "## 今日文献",
     ]
+
+    if groups:
+        lines.append("## 主题分类")
+        for g in groups:
+            idx_str = "、".join(str(i) for i in g["indices"])
+            lines.append(f"- **{g['label']}**：{idx_str}")
+        lines.append("")
+
+    lines.append("## 今日文献")
 
     for paper in papers:
         sid = paper.get("id", "")

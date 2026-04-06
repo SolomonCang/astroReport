@@ -68,17 +68,36 @@ def _render_digest_content(digest_text: str) -> str:
     current: dict[str, str] | None = None
     in_paper_section = False
 
+    in_group_section = False
+    group_items: list[str] = []
+
     for raw in lines:
         line = raw.strip()
         if not line:
             continue
 
         if line.startswith("## "):
+            if in_group_section and group_items:
+                tags = "".join(f'<span class="topic-tag">{t}</span>'
+                               for t in group_items)
+                intro_chunks.append(f'<div class="topic-group">{tags}</div>')
+                group_items = []
             heading = line[3:].strip()
             in_paper_section = "今日文献" in heading
-            if not in_paper_section:
+            in_group_section = "主题分类" in heading
+            if not in_paper_section and not in_group_section:
                 intro_chunks.append(
                     f'<h2 class="section-title">{html.escape(heading)}</h2>')
+            elif in_group_section:
+                intro_chunks.append(
+                    f'<h2 class="section-title">{html.escape(heading)}</h2>')
+            continue
+
+        if in_group_section and line.startswith("- "):
+            # e.g. "- **恒星磁场与磁活动**：10、21、22"
+            item = line[2:].strip()
+            item = re.sub(r"\*\*([^*]+)\*\*", r"\1", item)
+            group_items.append(html.escape(item))
             continue
 
         if in_paper_section and line.startswith("- "):
@@ -116,6 +135,11 @@ def _render_digest_content(digest_text: str) -> str:
 
     if current:
         papers.append(current)
+
+    if group_items:
+        tags = "".join(f'<span class="topic-tag">{t}</span>'
+                       for t in group_items)
+        intro_chunks.append(f'<div class="topic-group">{tags}</div>')
 
     papers_html: list[str] = []
     for idx, paper in enumerate(papers, start=1):
@@ -239,6 +263,23 @@ def build_digest_html(report_date: str, report_url: str,
             .intro-bullet {{
                 margin: 0 0 8px;
                 color: #2d3a48;
+            }}
+            .topic-group {{
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin: 4px 0 16px;
+            }}
+            .topic-tag {{
+                display: inline-block;
+                background: #e8f0f8;
+                color: #0b3a5b;
+                font-size: 13px;
+                line-height: 1.5;
+                padding: 4px 10px;
+                border-radius: 6px;
+                border: 1px solid #c4d8eb;
+                word-break: break-all;
             }}
             .paper-card {{
                 border: 1px solid #e2eaf3;

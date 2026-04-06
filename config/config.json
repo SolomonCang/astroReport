@@ -1,6 +1,6 @@
 {
   "arxiv": {
-    "categories": ["astro-ph.EP", "astro-ph.SR"],
+    "categories": ["astro-ph.EP", "astro-ph.SR", "astro-ph.GA"],
     "max_results": 200,
     "lookback_hours": 36
   },

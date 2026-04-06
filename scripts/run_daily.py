@@ -112,10 +112,18 @@ def main() -> int:
     index = _load_index(index_path)
     reports = index.get("reports", [])
 
+    base_lookback_hours = int(arxiv_cfg.get("lookback_hours", 36))
+    # On Monday (weekday 0), extend lookback to cover the weekend gap:
+    # Friday papers have published≈Fri 18:00 UTC, but Monday runs at ~04:00 UTC
+    # so the gap is ~58h; use 96h to be safe.
+    weekday = shanghai_now.weekday()  # 0=Monday
+    lookback_hours = max(base_lookback_hours,
+                         96) if weekday == 0 else base_lookback_hours
+
     papers = fetch_papers(
         categories=arxiv_cfg.get("categories", []),
         max_results=int(arxiv_cfg.get("max_results", 80)),
-        lookback_hours=int(arxiv_cfg.get("lookback_hours", 36)),
+        lookback_hours=lookback_hours,
     )
     fetched_count = len(papers)
 
@@ -149,19 +157,15 @@ def main() -> int:
     }
     global_summary = summary_payload.get("global_summary", "今日无更新。")
     related_ids = summary_payload.get("related_ids", [])
+    groups = summary_payload.get("groups", [])
 
-    id_to_index = {
-        paper.get("id", ""): idx
-        for idx, paper in enumerate(papers, start=1) if paper.get("id", "")
-    }
-    related_indices = []
-    if isinstance(related_ids, list):
-        related_indices = [
-            id_to_index[rid] for rid in related_ids if rid in id_to_index
-        ]
-    if related_indices:
-        prefix = "[相关文献编号: " + ", ".join(str(i) for i in related_indices) + "]"
-        global_summary = f"{prefix} {global_summary}".strip()
+    if groups:
+        group_parts = []
+        for g in groups:
+            idx_str = ", ".join(str(i) for i in sorted(g["indices"]))
+            group_parts.append(f"{g['label']}[{idx_str}]")
+        topics_line = "重点方向：" + "、".join(group_parts)
+        global_summary = f"{global_summary}\n\n{topics_line}"
 
     repository = os.getenv("GITHUB_REPOSITORY", "")
     base_blob = f"https://github.com/{repository}/blob/main" if repository else "https://github.com"
@@ -174,6 +178,7 @@ def main() -> int:
         global_summary=global_summary,
         papers=papers,
         summaries=summary_items,
+        groups=groups,
     )
     digest_text = render_digest(
         report_date=report_date,
@@ -181,6 +186,7 @@ def main() -> int:
         papers=papers,
         summaries=summary_items,
         report_url=report_url,
+        groups=groups,
     )
 
     _save_text(report_rel, full_text)
