@@ -39,4 +39,5 @@ jobs:
             exit 0
           fi
           git commit -m "chore: cleanup expired reports [skip ci]"
+          git pull --rebase origin main
           git push
