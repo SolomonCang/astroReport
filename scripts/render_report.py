@@ -50,7 +50,7 @@ def render_full_report(
     lines.extend([
         "## 元数据",
         f"- Generated At (UTC): {dt.datetime.now(dt.timezone.utc).isoformat()}",
-        "- Generator: GitHub Actions + OpenAI",
+        "- Generator: GitHub Actions + LLM",
         "",
     ])
     return "\n".join(lines)

@@ -38,7 +38,7 @@ dist/
 # Local secrets and environment files
 .env
 .env.*
-*.key
+*.keys
 *.pem
 *.p12
 
