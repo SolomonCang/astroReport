@@ -144,8 +144,9 @@ def main() -> int:
     papers = deduped_papers
 
     openai_key = os.getenv("OPENAI_API_KEY", "")
-    openai_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    openai_api_base = os.getenv("OPENAI_API_BASE", "")
+    openai_cfg = cfg.get("openai", {})
+    openai_model = openai_cfg.get("model", "gpt-4o-mini")
+    openai_api_base = openai_cfg.get("api_base", "")
     summary_payload = summarize_papers(papers=papers,
                                        model=openai_model,
                                        api_key=openai_key,
@@ -224,7 +225,8 @@ def main() -> int:
 
     resend_api_key = os.getenv("RESEND_API_KEY", "")
     recipients = cfg.get("mail_list", [])
-    from_email = os.getenv("RESEND_FROM_EMAIL", "onboarding@resend.dev")
+    from_email = cfg.get("email", {}).get("from_email",
+                                          "onboarding@resend.dev")
 
     html = build_digest_html(
         report_date=report_date,

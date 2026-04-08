@@ -28,10 +28,7 @@ jobs:
       - name: Generate report and send email
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
-          OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python -m scripts.run_daily

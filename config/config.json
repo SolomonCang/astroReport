@@ -8,6 +8,13 @@
     "dedup_lookback_days": 15,
     "retention_days": 5
   },
+  "openai": {
+    "model": "deepseek-chat",
+    "api_base": "https://api.deepseek.com/v1"
+  },
+  "email": {
+    "from_email": "report@astrocang.space"
+  },
   "mail_list": [
     "astrocang@gmail.com"
   ]
