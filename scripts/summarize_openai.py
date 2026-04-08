@@ -210,5 +210,16 @@ def summarize_papers(
             "groups": groups,
             "items": items,
         }
-    except Exception:
+    except Exception as e:
+        import traceback
+        err_msg = f"[summarize_openai] Exception: {e}\n" + traceback.format_exc(
+        )
+        # 记录原始返回内容（如有）
+        try:
+            err_msg += f"\n[raw content]: {locals().get('content', None)}\n"
+        except Exception:
+            pass
+        # 写入本地日志文件
+        with open("summarize_openai_error.log", "a", encoding="utf-8") as f:
+            f.write(err_msg + "\n")
         return _fallback_summary(papers)

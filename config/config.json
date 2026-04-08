@@ -10,7 +10,7 @@
   },
   "openai": {
     "model": "deepseek-chat",
-    "api_base": "https://api.deepseek.com/v1"
+    "api_base": "https://api.deepseek.com"
   },
   "email": {
     "from_email": "report@astrocang.space"

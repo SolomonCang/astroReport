@@ -143,10 +143,11 @@ def main() -> int:
             history_keys.add(key)
     papers = deduped_papers
 
-    openai_key = os.getenv("OPENAI_API_KEY", "")
     openai_cfg = cfg.get("openai", {})
-    openai_model = openai_cfg.get("model", "gpt-4o-mini")
-    openai_api_base = openai_cfg.get("api_base", "")
+    openai_key = os.getenv("OPENAI_API_KEY") or openai_cfg.get("api_key", "")
+    openai_model = os.getenv("OPENAI_MODEL") or openai_cfg.get("model", "")
+    openai_api_base = os.getenv("OPENAI_API_BASE") or openai_cfg.get(
+        "api_base", "")
     summary_payload = summarize_papers(papers=papers,
                                        model=openai_model,
                                        api_key=openai_key,

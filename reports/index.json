@@ -4,12 +4,12 @@
       "date": "2026-04-08",
       "title": "astroReport 日报 2026-04-08",
       "guid": "astroreport-2026-04-08",
-      "created_at": "2026-04-08T03:09:54.995505+00:00",
-      "expire_at": "2026-04-13T03:09:54.995505+00:00",
+      "created_at": "2026-04-08T07:59:47.647256+00:00",
+      "expire_at": "2026-04-13T07:59:47.647256+00:00",
       "report_path": "reports/2026-04-08.md",
       "digest_path": "reports/2026-04-08.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-04-08.md",
-      "digest_summary": "今日文献已更新。以下为自动生成的精简摘要。",
+      "report_url": "https://github.com/reports/2026-04-08.md",
+      "digest_summary": "今日文献主要关注恒星磁场与磁活动、系外行星研究、尘埃与消光、复杂分子等方向。在恒星磁场方面，研究涉及对流模型测试和星行磁相互作用模拟；系外行星研究聚焦于热木星大气特征和行星形成过程；尘埃与消光方向探讨了星际介质化学组成；复杂分子研究则分析了致密核的分子丰度。此外，还有文献涉及星系演化、数值模拟方法等主题。\n\n重点方向：恒星磁场[1, 26]、磁活动[30]、系外行星研究[2, 8, 20, 29, 33, 35]、尘埃与消光[7]、复杂分子[13]、其他天文[3, 4, 5, 6, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 27, 28, 31, 32, 34, 36, 37]",
       "paper_links": [
         "https://arxiv.org/abs/2604.06151v1",
         "https://arxiv.org/abs/2604.06064v1",
@@ -47,18 +47,7 @@
         "https://arxiv.org/abs/2604.05221v1",
         "https://arxiv.org/abs/2604.05178v1",
         "https://arxiv.org/abs/2604.05145v1",
-        "https://arxiv.org/abs/2604.05141v1",
-        "https://arxiv.org/abs/2604.05122v1",
-        "https://arxiv.org/abs/2604.05104v1",
-        "https://arxiv.org/abs/2604.05049v1",
-        "https://arxiv.org/abs/2604.05040v1",
-        "https://arxiv.org/abs/2604.05035v1",
-        "https://arxiv.org/abs/2604.05033v1",
-        "https://arxiv.org/abs/2604.05029v1",
-        "https://arxiv.org/abs/2604.05024v1",
-        "https://arxiv.org/abs/2604.05020v1",
-        "https://arxiv.org/abs/2604.05019v1",
-        "https://arxiv.org/abs/2604.05022v1"
+        "https://arxiv.org/abs/2604.05141v1"
       ]
     },
     {
