@@ -193,35 +193,6 @@
       ]
     },
     {
-      "date": "2026-04-03",
-      "title": "astroReport 日报 2026-04-03",
-      "guid": "astroreport-2026-04-03",
-      "created_at": "2026-04-03T04:16:42.952355+00:00",
-      "expire_at": "2026-04-08T04:16:42.952355+00:00",
-      "report_path": "reports/2026-04-03.md",
-      "digest_path": "reports/2026-04-03.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-04-03.md",
-      "digest_summary": "[相关文献编号: 3, 1, 11, 10, 13] 今日文献聚焦于恒星磁场与磁活动、系外行星研究、DIB（弥漫星际带）及尘埃消光等方向。在恒星磁场方面，研究涉及大质量双星系统的轨道与质量测定，以及小尺度发电机模型；磁活动方面，探讨了太阳等离子体片加热与过渡区爆发事件。系外行星研究重点关注热岩石行星的大气保留问题与甲烷缺失之谜。DIB研究提供了最详细的谱线库，而尘埃消光则关联于星际介质建模。此外，恒星地震学为红巨星内部结构提供新诊断。",
-      "paper_links": [
-        "https://arxiv.org/abs/2604.02332v1",
-        "https://arxiv.org/abs/2604.02242v1",
-        "https://arxiv.org/abs/2604.02111v1",
-        "https://arxiv.org/abs/2604.02065v1",
-        "https://arxiv.org/abs/2604.01927v1",
-        "https://arxiv.org/abs/2604.01847v1",
-        "https://arxiv.org/abs/2604.01806v1",
-        "https://arxiv.org/abs/2604.01783v1",
-        "https://arxiv.org/abs/2604.01774v1",
-        "https://arxiv.org/abs/2604.01718v1",
-        "https://arxiv.org/abs/2604.01672v1",
-        "https://arxiv.org/abs/2604.01628v1",
-        "https://arxiv.org/abs/2604.01389v1",
-        "https://arxiv.org/abs/2604.01323v1",
-        "https://arxiv.org/abs/2604.01281v1",
-        "https://arxiv.org/abs/2604.01276v1"
-      ]
-    },
-    {
       "date": "2026-04-02",
       "title": "astroReport 日报 2026-04-02",
       "guid": "astroreport-2026-04-02",
