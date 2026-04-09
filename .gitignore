@@ -42,5 +42,8 @@ dist/
 *.pem
 *.p12
 
+# Local run script (contains secret loading logic)
+run_local.sh
+
 # Notebook checkpoints and temporary exports
 *.ipynb_checkpoints
