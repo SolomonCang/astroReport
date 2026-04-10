@@ -109,7 +109,8 @@ def _request_entries(query: str, start: int,
                 f"      [arxiv] 请求失败 (attempt {attempt + 1}/3): "
                 f"{type(err).__name__}: {err}"
             )
-        time.sleep(2 * (attempt + 1))
+        if attempt < 2:
+            time.sleep(2 * (attempt + 1))
 
     if last_error is not None:
         print("      [arxiv] 所有重试均失败，返回空结果")
