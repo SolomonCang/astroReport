@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -64,7 +65,13 @@ def _parse_entry(entry: ET.Element) -> dict[str, Any]:
 
 
 def _request_entries(query: str, start: int,
-                     page_size: int) -> list[ET.Element]:
+                     page_size: int) -> tuple[list[ET.Element], bool]:
+    """Fetch one page of arXiv entries.
+
+    Returns a tuple of (entries, api_ok).  api_ok is False when all retry
+    attempts failed so callers can distinguish a real API error from a
+    legitimate empty result set.
+    """
     params = {
         "search_query": query,
         "start": start,
@@ -73,6 +80,7 @@ def _request_entries(query: str, start: int,
         "sortOrder": "descending",
     }
     url = f"{ARXIV_API}?{urllib.parse.urlencode(params)}"
+    print(f"      [arxiv] GET {url}")
 
     req = urllib.request.Request(
         url,
@@ -89,19 +97,36 @@ def _request_entries(query: str, start: int,
                 content = resp.read()
             last_error = None
             break
+        except urllib.error.HTTPError as err:
+            last_error = err
+            print(
+                f"      [arxiv] 请求失败 (attempt {attempt + 1}/3): "
+                f"HTTP {err.code} {err.reason}"
+            )
         except Exception as err:
             last_error = err
-            time.sleep(2 * (attempt + 1))
+            print(
+                f"      [arxiv] 请求失败 (attempt {attempt + 1}/3): "
+                f"{type(err).__name__}: {err}"
+            )
+        time.sleep(2 * (attempt + 1))
 
     if last_error is not None:
-        return []
+        print("      [arxiv] 所有重试均失败，返回空结果")
+        return [], False
 
     root = ET.fromstring(content)
-    return root.findall("atom:entry", ATOM_NS)
+    return root.findall("atom:entry", ATOM_NS), True
 
 
 def fetch_papers(categories: list[str], max_results: int,
-                 lookback_hours: int) -> list[dict[str, Any]]:
+                 lookback_hours: int) -> tuple[list[dict[str, Any]], bool]:
+    """Fetch arXiv papers for the given categories within the lookback window.
+
+    Returns a tuple of (papers, api_ok).  api_ok is False when at least one
+    page request failed on all retries, meaning the result set may be
+    incomplete.
+    """
     query = _build_query(categories)
     page_size = max(1, int(max_results))
 
@@ -112,11 +137,15 @@ def fetch_papers(categories: list[str], max_results: int,
     start = 0
     # Cap pages to protect the workflow from pathological loops.
     max_pages = 20
+    api_ok = True
 
     for _ in range(max_pages):
-        entries = _request_entries(query=query,
-                                   start=start,
-                                   page_size=page_size)
+        entries, page_ok = _request_entries(query=query,
+                                            start=start,
+                                            page_size=page_size)
+        if not page_ok:
+            api_ok = False
+            break
         if not entries:
             break
 
@@ -147,4 +176,4 @@ def fetch_papers(categories: list[str], max_results: int,
     sorted_papers = sorted(dedup.values(),
                            key=lambda x: x["published"],
                            reverse=True)
-    return sorted_papers
+    return sorted_papers, api_ok
