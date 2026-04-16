@@ -20,6 +20,53 @@
 - scripts/cleanup_reports.py: 清理入口
 - reports/index.json: 报告索引
 
+## 0. 前置准备
+
+### 0.1 申请 Resend API Key
+
+Resend 是本项目用于发送每日邮件的服务。
+
+1. 访问 [https://resend.com](https://resend.com) 注册账号（免费计划每月可发 3000 封）
+2. 进入 **Domains** 页面，点击 **Add Domain**，添加并验证你拥有的域名（按提示在 DNS 服务商处添加 MX、TXT、DKIM 记录）
+3. 域名验证通过后，进入 **API Keys** 页面，点击 **Create API Key**，生成一个密钥
+4. 将该密钥填入仓库 Secret `RESEND_API_KEY`
+5. `RESEND_FROM_EMAIL` 填写使用已验证域名的发件地址，例如 `noreply@你的域名`
+
+> **注意**：Resend 要求发件地址的域名必须经过验证，否则发送会失败。
+
+### 0.2 接入 LLM 接口（OpenAI 或兼容服务）
+
+本项目通过 OpenAI Chat Completions 接口生成中文摘要，支持 OpenAI 官方及所有兼容服务。
+
+#### 使用 OpenAI 官方接口
+
+1. 访问 [https://platform.openai.com](https://platform.openai.com)，注册并登录
+2. 进入 **API Keys** 页面，创建一个 API Key
+3. 将该密钥填入仓库 Secret `OPENAI_API_KEY`
+4. `OPENAI_MODEL` 可留空（默认 `gpt-4o-mini`）或填写其他模型名，如 `gpt-4o`
+5. `OPENAI_API_BASE` 可留空
+
+#### 使用类 OpenAI 兼容服务（国内可用）
+
+任何兼容 OpenAI Chat Completions 格式的服务均可接入，例如：
+
+| 服务商 | 官网 | OPENAI_API_BASE 示例 |
+|---|---|---|
+| 硅基流动 (SiliconFlow) | https://siliconflow.cn | `https://api.siliconflow.cn/v1` |
+| DeepSeek | https://platform.deepseek.com | `https://api.deepseek.com/v1` |
+| 阿里云百炼 | https://bailian.console.aliyun.com | `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| 字节豆包 (Ark) | https://www.volcengine.com/product/ark | `https://ark.cn-beijing.volces.com/api/v3` |
+
+接入步骤（以任意兼容服务为例）：
+
+1. 在对应服务商官网注册并开通 API 访问权限
+2. 在控制台创建 API Key
+3. 将 API Key 填入 `OPENAI_API_KEY`
+4. 将服务商提供的 base URL 填入 `OPENAI_API_BASE`
+5. 将对应模型名称填入 `OPENAI_MODEL`
+
+> **提示**：`OPENAI_API_BASE` 既可以是不带路径后缀的 base URL（如 `https://api.siliconflow.cn/v1`），也可以是完整的 chat completions 端点（如 `https://api.siliconflow.cn/v1/chat/completions`），两者均可识别。
+
 ## 1. 配置 GitHub Secrets
 
 在仓库 Settings > Secrets and variables > Actions 中添加：
