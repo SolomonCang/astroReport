@@ -126,13 +126,15 @@ def main() -> int:
     print(
         f"[2/7] 拉取 arXiv  categories={categories}  lookback_hours={lookback_hours}"
     )
-    papers = fetch_papers(
+    papers, arxiv_api_ok = fetch_papers(
         categories=categories,
         max_results=int(arxiv_cfg.get("max_results", 80)),
         lookback_hours=lookback_hours,
     )
     fetched_count = len(papers)
     print(f"      获取到 {fetched_count} 篇论文")
+    if not arxiv_api_ok:
+        print("      [警告] arXiv API 请求失败，结果可能不完整")
 
     print(f"[3/7] 去重  lookback_days={dedup_lookback_days}")
     history_keys = _collect_recent_paper_keys(
@@ -355,6 +357,7 @@ def main() -> int:
         "dedup_lookback_days": dedup_lookback_days,
         "papers": len(papers),
         "email_sent": email_ok,
+        "arxiv_api_ok": arxiv_api_ok,
         "generated_at": now_utc.isoformat(),
     }
     _save_text("data/last_run.json",
@@ -365,6 +368,10 @@ def main() -> int:
     print(f"      removed_duplicates={removed_duplicates}")
     print(f"      papers={len(papers)}")
     print(f"      email_sent={email_ok}")
+    print(f"      arxiv_api_ok={arxiv_api_ok}")
+    if not arxiv_api_ok:
+        print("[ERROR] arXiv API 请求失败，请检查网络或 arXiv 服务状态")
+        return 1
     return 0
 
 
