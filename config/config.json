@@ -2,7 +2,7 @@
   "arxiv": {
     "categories": ["astro-ph.EP", "astro-ph.SR", "astro-ph.GA"],
     "max_results": 200,
-    "lookback_hours": 36
+    "lookback_hours": 96
   },
   "report": {
     "dedup_lookback_days": 15,
