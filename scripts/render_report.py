@@ -35,10 +35,15 @@ def render_full_report(
         sitem = summaries.get(sid, {})
         keyword_text = "、".join(sitem.get(
             "keywords", [])) if sitem.get("keywords") else "无"
-        authors = ", ".join(paper.get("authors", [])[:6]) or "Unknown"
+        authors = ", ".join(paper.get("authors", [])[:5]) or "Unknown"
+        affil = paper.get("first_author_affiliation", "")
         lines.extend([
             f"### {idx}. {paper.get('title', 'Untitled')}",
             f"- Authors: {authors}",
+        ])
+        if affil:
+            lines.append(f"- Affiliation: {affil}")
+        lines.extend([
             f"- Published: {paper.get('published', '')}",
             f"- arXiv: {paper.get('link', '')}",
             f"- PDF: {paper.get('pdf_link', '')}",
@@ -88,8 +93,15 @@ def render_digest(
     for paper in papers:
         sid = paper.get("id", "")
         sitem = summaries.get(sid, {})
+        authors = ", ".join(paper.get("authors", [])[:5]) or "Unknown"
+        affil = paper.get("first_author_affiliation", "")
         lines.extend([
             f"- {paper.get('title', 'Untitled')}",
+            f"  - 作者: {authors}",
+        ])
+        if affil:
+            lines.append(f"  - 单位: {affil}")
+        lines.extend([
             f"  - 摘要: {sitem.get('summary', '')}",
             f"  - 链接: {paper.get('link', '')}",
         ])

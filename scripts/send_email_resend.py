@@ -105,6 +105,12 @@ def _render_digest_content(digest_text: str) -> str:
             if item.startswith("摘要:"):
                 if current:
                     current["summary"] = item[len("摘要:"):].strip()
+            elif item.startswith("作者:"):
+                if current:
+                    current["authors"] = item[len("作者:"):].strip()
+            elif item.startswith("单位:"):
+                if current:
+                    current["affiliation"] = item[len("单位:"):].strip()
             elif item.startswith("链接:"):
                 if current:
                     current["link"] = item[len("链接:"):].strip()
@@ -113,6 +119,8 @@ def _render_digest_content(digest_text: str) -> str:
                     papers.append(current)
                 current = {
                     "title": item,
+                    "authors": "",
+                    "affiliation": "",
                     "summary": "",
                     "link": "",
                 }
@@ -146,6 +154,8 @@ def _render_digest_content(digest_text: str) -> str:
         title = _linkify_markdown(
             paper.get("title", "").strip() or f"文献 {idx}")
         summary = _linkify_markdown(paper.get("summary", "").strip() or "暂无摘要")
+        authors_text = html.escape(paper.get("authors", "").strip())
+        affil_text = html.escape(paper.get("affiliation", "").strip())
         link = paper.get("link", "").strip()
         link_html = ""
         if link:
@@ -153,10 +163,20 @@ def _render_digest_content(digest_text: str) -> str:
             link_html = (
                 f'<a class="paper-link" href="{safe_link}" target="_blank" '
                 f'rel="noopener noreferrer">查看原文</a>')
+        meta_parts: list[str] = []
+        if authors_text:
+            meta_parts.append(f'<span class="paper-authors">{authors_text}</span>')
+        if affil_text:
+            meta_parts.append(f'<span class="paper-affil">{affil_text}</span>')
+        meta_html = (
+            f'<p class="paper-meta">{" &nbsp;|&nbsp; ".join(meta_parts)}</p>'
+            if meta_parts else ""
+        )
 
         papers_html.append("".join([
             '<article class="paper-card">',
             f'<h3 class="paper-title"><span class="paper-index">{idx}.</span> {title}</h3>',
+            meta_html,
             f'<p class="paper-summary">{summary}</p>',
             link_html,
             '</article>',
@@ -303,8 +323,18 @@ def build_digest_html(report_date: str, report_url: str,
                 font-size: 14px;
                 line-height: 1.75;
                 color: #2d3a48;
-            }}
-            .paper-link {{
+            }}            .paper-meta {
+                margin: 0 0 8px;
+                font-size: 13px;
+                color: #5b6b7d;
+                line-height: 1.5;
+            }
+            .paper-authors {
+                font-style: italic;
+            }
+            .paper-affil {
+                color: #7a8fa0;
+            }            .paper-link {{
                 display: inline-block;
                 margin-top: 10px;
                 font-size: 13px;

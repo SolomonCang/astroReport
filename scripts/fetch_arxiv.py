@@ -9,6 +9,7 @@ from typing import Any
 
 ARXIV_API = "https://export.arxiv.org/api/query"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
+ARXIV_NS = {"arxiv": "http://arxiv.org/schemas/atom"}
 
 
 def _build_query(categories: list[str]) -> str:
@@ -27,10 +28,17 @@ def _parse_entry(entry: ET.Element) -> dict[str, Any]:
                              namespaces=ATOM_NS) or ""
 
     authors: list[str] = []
-    for author in entry.findall("atom:author", ATOM_NS):
+    first_author_affiliation: str = ""
+    for i, author in enumerate(entry.findall("atom:author", ATOM_NS)):
         name = author.findtext("atom:name", default="", namespaces=ATOM_NS)
         if name:
             authors.append(name)
+        if i == 0:
+            affil = author.findtext(
+                "arxiv:affiliation", default="", namespaces=ARXIV_NS
+            )
+            if affil:
+                first_author_affiliation = affil.strip()
 
     links = entry.findall("atom:link", ATOM_NS)
     html_link = ""
@@ -55,6 +63,7 @@ def _parse_entry(entry: ET.Element) -> dict[str, Any]:
         "title": title,
         "summary": summary,
         "authors": authors,
+        "first_author_affiliation": first_author_affiliation,
         "published": published,
         "updated": updated,
         "link": html_link or entry_id,
