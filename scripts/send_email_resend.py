@@ -165,13 +165,13 @@ def _render_digest_content(digest_text: str) -> str:
                 f'rel="noopener noreferrer">查看原文</a>')
         meta_parts: list[str] = []
         if authors_text:
-            meta_parts.append(f'<span class="paper-authors">{authors_text}</span>')
+            meta_parts.append(
+                f'<span class="paper-authors">{authors_text}</span>')
         if affil_text:
             meta_parts.append(f'<span class="paper-affil">{affil_text}</span>')
         meta_html = (
             f'<p class="paper-meta">{" &nbsp;|&nbsp; ".join(meta_parts)}</p>'
-            if meta_parts else ""
-        )
+            if meta_parts else "")
 
         papers_html.append("".join([
             '<article class="paper-card">',
@@ -323,18 +323,20 @@ def build_digest_html(report_date: str, report_url: str,
                 font-size: 14px;
                 line-height: 1.75;
                 color: #2d3a48;
-            }}            .paper-meta {
+            }}
+            .paper-meta {{
                 margin: 0 0 8px;
                 font-size: 13px;
                 color: #5b6b7d;
                 line-height: 1.5;
-            }
-            .paper-authors {
+            }}
+            .paper-authors {{
                 font-style: italic;
-            }
-            .paper-affil {
+            }}
+            .paper-affil {{
                 color: #7a8fa0;
-            }            .paper-link {{
+            }}
+            .paper-link {{
                 display: inline-block;
                 margin-top: 10px;
                 font-size: 13px;
