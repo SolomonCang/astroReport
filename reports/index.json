@@ -1,6 +1,41 @@
 {
   "reports": [
     {
+      "date": "2026-05-04",
+      "title": "astroReport 日报 2026-05-04",
+      "guid": "astroreport-2026-05-04",
+      "created_at": "2026-05-04T03:13:32.331821+00:00",
+      "expire_at": "2026-05-09T03:13:32.331821+00:00",
+      "report_path": "reports/2026-05-04.md",
+      "digest_path": "reports/2026-05-04.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-05-04.md",
+      "digest_summary": "今日文献涵盖星系、恒星、系外行星、太阳物理、星际介质等多个方向。星系方向（10篇）占主导，包括AGN宿主星系、高红移超大质量黑洞、矮星系结构等；恒星物理（5篇）涉及天琴RR星、太阳过渡区磁环、日珥模拟等；系外行星（5篇）聚焦于岩质行星表面、热木星大气、行星宜居性等；太阳物理（3篇）包括ICME加速、太阳风波动、日珥形成；星际介质（2篇）涉及CCH+光谱和消光律。最值得关注的是LHS 3844 b的JWST中红外光谱（论文21），首次揭示岩质系外行星表面为暗色低硅表面，对理解行星表面演化有重要意义；另一篇是CCH+的高分辨光谱（论文8），已引导其在Orion Bar的首次空间探测。\n\n重点方向：星系与AGN[1, 2, 3, 4, 5, 6, 7, 8, 9]、恒星物理[10, 11, 12, 13, 14, 15]、系外行星[16, 17, 18, 19, 20]、星际介质与分子[21, 22]",
+      "paper_links": [
+        "https://arxiv.org/abs/2605.00822v1",
+        "https://arxiv.org/abs/2605.00763v1",
+        "https://arxiv.org/abs/2605.00687v1",
+        "https://arxiv.org/abs/2605.00659v1",
+        "https://arxiv.org/abs/2605.00563v1",
+        "https://arxiv.org/abs/2605.00349v1",
+        "https://arxiv.org/abs/2605.00262v1",
+        "https://arxiv.org/abs/2605.00223v1",
+        "https://arxiv.org/abs/2605.00092v1",
+        "https://arxiv.org/abs/2605.00792v1",
+        "https://arxiv.org/abs/2605.00767v1",
+        "https://arxiv.org/abs/2605.00344v1",
+        "https://arxiv.org/abs/2605.00163v1",
+        "https://arxiv.org/abs/2605.00162v1",
+        "https://arxiv.org/abs/2605.00102v1",
+        "https://arxiv.org/abs/2605.00700v1",
+        "https://arxiv.org/abs/2605.00289v1",
+        "https://arxiv.org/abs/2605.00170v1",
+        "https://arxiv.org/abs/2605.00154v1",
+        "https://arxiv.org/abs/2605.00100v1",
+        "https://arxiv.org/abs/2605.00564v1",
+        "https://arxiv.org/abs/2605.00122v1"
+      ]
+    },
+    {
       "date": "2026-05-01",
       "title": "astroReport 日报 2026-05-01",
       "guid": "astroreport-2026-05-01",
