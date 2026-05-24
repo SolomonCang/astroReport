@@ -196,45 +196,6 @@
         "https://arxiv.org/abs/2605.19057v1",
         "https://arxiv.org/abs/2605.18959v1"
       ]
-    },
-    {
-      "date": "2026-05-19",
-      "title": "astroReport 日报 2026-05-19",
-      "guid": "astroreport-2026-05-19",
-      "created_at": "2026-05-19T03:14:29.048663+00:00",
-      "expire_at": "2026-05-24T03:14:29.048663+00:00",
-      "report_path": "reports/2026-05-19.md",
-      "digest_path": "reports/2026-05-19.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-05-19.md",
-      "digest_summary": "今日文献涵盖恒星磁场、磁活动、系外行星、尘埃与消光、复杂有机分子等多个方向。恒星磁场方面，M15测试了M矮星磁场测量可靠性，发现自由拟合线强会低估磁场30-50%。磁活动方面，Y7发现年轻恒星体光学变率以星斑模板为主。系外行星方面，K2-18b的Hycean大气解释得到光化学模型支持。尘埃与消光方面，BISTRO巡天在M17 SW发现引力主导的恒星形成。复杂有机分子方面，T Tauri星盘内区C2H2发射可示踪元素组成。最值得关注的是M15对M矮星磁场测量可靠性的测试，以及Y7对年轻恒星体变率的研究。\n\n重点方向：恒星磁场[1]、磁活动[2, 3, 4]、系外行星[5, 6, 7]、尘埃与消光[8]、复杂有机分子[6]、恒星演化与结构[9, 10, 11, 12, 13]、星系与AGN[14, 15, 16, 17, 18, 19]、星际介质与分子[20, 21]、其他天文[22, 23, 24, 25, 26]",
-      "paper_links": [
-        "https://arxiv.org/abs/2605.18151v1",
-        "https://arxiv.org/abs/2605.18366v1",
-        "https://arxiv.org/abs/2605.18300v1",
-        "https://arxiv.org/abs/2605.18280v1",
-        "https://arxiv.org/abs/2605.18131v1",
-        "https://arxiv.org/abs/2605.18062v1",
-        "https://arxiv.org/abs/2605.17803v1",
-        "https://arxiv.org/abs/2605.17708v1",
-        "https://arxiv.org/abs/2605.18731v1",
-        "https://arxiv.org/abs/2605.18665v1",
-        "https://arxiv.org/abs/2605.18234v1",
-        "https://arxiv.org/abs/2605.18090v1",
-        "https://arxiv.org/abs/2605.17654v1",
-        "https://arxiv.org/abs/2605.18283v1",
-        "https://arxiv.org/abs/2605.18161v1",
-        "https://arxiv.org/abs/2605.17993v1",
-        "https://arxiv.org/abs/2605.17983v1",
-        "https://arxiv.org/abs/2605.17882v1",
-        "https://arxiv.org/abs/2605.17547v1",
-        "https://arxiv.org/abs/2605.18438v1",
-        "https://arxiv.org/abs/2605.18275v1",
-        "https://arxiv.org/abs/2605.18499v1",
-        "https://arxiv.org/abs/2605.18353v1",
-        "https://arxiv.org/abs/2605.18264v1",
-        "https://arxiv.org/abs/2605.18260v1",
-        "https://arxiv.org/abs/2605.17546v1"
-      ]
     }
   ]
 }
