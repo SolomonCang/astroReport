@@ -1,6 +1,6 @@
 {
   "categories": ["astro-ph.EP", "astro-ph.SR"],
   "max_results": 80,
-  "lookback_hours": 36,
+  "lookback_hours": 72,
   "dedup_lookback_days": 15
 }
