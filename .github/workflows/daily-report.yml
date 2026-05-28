@@ -43,5 +43,5 @@ jobs:
             exit 0
           fi
           git commit -m "chore: daily astro report [skip ci]"
-          git pull --rebase origin main
+          git pull --rebase -X theirs origin main
           git push
