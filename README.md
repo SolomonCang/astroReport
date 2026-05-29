@@ -45,8 +45,8 @@ OPENAI_API_BASE 示例：
 {
   "arxiv": {
     "categories": ["astro-ph.EP", "astro-ph.SR"],
-    "max_results": 80,
-    "lookback_hours": 36
+    "max_results": 200,
+    "lookback_hours": 48
   },
   "report": {
     "dedup_lookback_days": 15,

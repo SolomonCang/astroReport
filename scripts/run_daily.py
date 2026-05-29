@@ -114,7 +114,7 @@ def main() -> int:
     index = _load_index(index_path)
     reports = index.get("reports", [])
 
-    base_lookback_hours = int(arxiv_cfg.get("lookback_hours", 36))
+    base_lookback_hours = int(arxiv_cfg.get("lookback_hours", 48))
     # On Monday (weekday 0), extend lookback to cover the weekend gap:
     # Friday papers have published≈Fri 18:00 UTC, but Monday runs at ~04:00 UTC
     # so the gap is ~58h; use 96h to be safe.
@@ -128,7 +128,7 @@ def main() -> int:
     )
     papers = fetch_papers(
         categories=categories,
-        max_results=int(arxiv_cfg.get("max_results", 80)),
+        max_results=int(arxiv_cfg.get("max_results", 200)),
         lookback_hours=lookback_hours,
     )
     fetched_count = len(papers)
