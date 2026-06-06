@@ -11,6 +11,7 @@ CONFIG_PATH = "config/config.json"
 DEFAULT_RETENTION_DAYS = 15
 DEFAULT_DEDUP_LOOKBACK_DAYS = 15
 VERSION_SUFFIX_RE = re.compile(r"v\d+$")
+SUMMARY_REF_RE = re.compile(r"(文献\s*)(\d+)")
 
 try:
     from scripts.fetch_arxiv import fetch_papers
@@ -68,6 +69,18 @@ def _paper_key(paper: dict) -> str:
         if key:
             return key
     return ""
+
+
+def _remap_summary_indices(text: str, old_to_new: dict[int, int]) -> str:
+    """将总结正文中的“文献N”引用重映射到重排后的编号。"""
+
+    def _replace(match: re.Match[str]) -> str:
+        prefix = match.group(1)
+        old_idx = int(match.group(2))
+        new_idx = old_to_new.get(old_idx, old_idx)
+        return f"{prefix}{new_idx}"
+
+    return SUMMARY_REF_RE.sub(_replace, text)
 
 
 def _collect_recent_paper_keys(index: dict, report_date: str,
@@ -260,6 +273,10 @@ def main() -> int:
             old: new
             for new, old in enumerate(ordered_indices, start=1)
         }
+
+        summary_body = global_summary.rsplit("\n\n", 1)[0]
+        summary_body = _remap_summary_indices(summary_body, old_to_new)
+
         groups = [{
             "label":
             g["label"],
@@ -272,9 +289,7 @@ def main() -> int:
             idx_str = ", ".join(str(i) for i in g["indices"])
             group_parts.append(f"{g['label']}[{idx_str}]")
         topics_line = "重点方向：" + "、".join(group_parts)
-        # 替换原有 topics_line（最后一行）
-        global_summary = global_summary.rsplit("\n\n",
-                                               1)[0] + f"\n\n{topics_line}"
+        global_summary = f"{summary_body}\n\n{topics_line}"
 
     # ── 步骤 5：最终完整渲染（含全局总结和分组）─────────────────
     print("[5/7] 最终渲染报告")
