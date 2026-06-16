@@ -1,6 +1,34 @@
 {
   "reports": [
     {
+      "date": "2026-06-16",
+      "title": "astroReport 日报 2026-06-16",
+      "guid": "astroreport-2026-06-16",
+      "created_at": "2026-06-16T03:15:59.441820+00:00",
+      "expire_at": "2026-06-21T03:15:59.441820+00:00",
+      "report_path": "reports/2026-06-16.md",
+      "digest_path": "reports/2026-06-16.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-06-16.md",
+      "digest_summary": "本次文献涵盖星系、恒星物理、太阳物理、超新星、SETI等多个方向。星系相关论文最多（8篇），涉及星团、银盘结构、星系并合、IMF、AGN等；恒星物理方面有星震学（1篇）和星族合成模型（1篇）；太阳物理与空间天气有2篇（CME预报、太阳风加速）；另有1篇SETI综述和1篇宇宙学模拟。最值得关注的是论文5（Luminaries in the Sky: The TESS LEGACY sample of bright stars. II. In-depth seismic characterisation of 32 naked-eye stars in the PLATO LOP fields），其对32颗亮星进行了详细星震学分析，为PLATO任务提供关键校准样本。另一篇是论文10（Origin of the double-peaked narrow emission-lines in the optical spectra of X-shaped Radio Galaxies），发现X型射电星系中双峰窄发射线比例高达30%，支持双AGN/双黑洞解释。\n\n重点方向：星系与银河系[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]、恒星物理[11]、太阳物理与空间天气[12, 13]、其他天文[14, 15]",
+      "paper_links": [
+        "https://arxiv.org/abs/2603.04507",
+        "https://arxiv.org/abs/2603.15899",
+        "https://arxiv.org/abs/2110.05499",
+        "https://arxiv.org/abs/2501.03133",
+        "https://arxiv.org/abs/2509.12312",
+        "https://arxiv.org/abs/2511.10092",
+        "https://arxiv.org/abs/2605.30367",
+        "https://arxiv.org/abs/2606.10558",
+        "https://arxiv.org/abs/2404.13118",
+        "https://arxiv.org/abs/2512.02094",
+        "https://arxiv.org/abs/2605.14713",
+        "https://arxiv.org/abs/2602.22982",
+        "https://arxiv.org/abs/2602.16221",
+        "https://arxiv.org/abs/2602.12303",
+        "https://arxiv.org/abs/2606.00463"
+      ]
+    },
+    {
       "date": "2026-06-15",
       "title": "astroReport 日报 2026-06-15",
       "guid": "astroreport-2026-06-15",
