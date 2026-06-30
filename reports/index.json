@@ -1,6 +1,37 @@
 {
   "reports": [
     {
+      "date": "2026-06-30",
+      "title": "astroReport 日报 2026-06-30",
+      "guid": "astroreport-2026-06-30",
+      "created_at": "2026-06-30T03:13:54.410328+00:00",
+      "expire_at": "2026-07-05T03:13:54.410328+00:00",
+      "report_path": "reports/2026-06-30.md",
+      "digest_path": "reports/2026-06-30.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-06-30.md",
+      "digest_summary": "今日文献涵盖恒星物理、星系物理、高能天体物理和宇宙学等多个方向。恒星物理方面，一篇关于14 Herculis系统的动力学模拟表明其巨行星轨道需通过早期抛射解释，另一篇对相接双星TYC 3801-1529-1的分析发现极低质量比并预测其可能并合。星系物理方面，多篇论文涉及AGN反馈、星系棒形成、暗物质分布等，其中JWST在z=4.055的富气体盘星系中探测到恒星棒，挑战了传统棒形成理论。高能天体物理方面，对IIn型超新星和千新星的研究揭示了新的分类特征。宇宙学方面，利用FRB首次测量重子反馈参数，并排除了无反馈模型。最值得关注的论文是14 Herculis系统动力学模拟（论文1）和z=4.055星系棒探测（论文11）。\n\n重点方向：恒星与行星系统[1, 2, 3, 4]、超新星与千新星[5, 6]、恒星化学与基准星[7]、星系与AGN[8, 9, 10, 11, 12, 13]、暗物质与动力学[14]、宇宙学与星系团[15, 16, 17]、银河系高能现象[18]",
+      "paper_links": [
+        "https://arxiv.org/abs/2605.30177",
+        "https://arxiv.org/abs/2601.00232",
+        "https://arxiv.org/abs/2605.15757",
+        "https://arxiv.org/abs/2604.24874",
+        "https://arxiv.org/abs/2411.07287",
+        "https://arxiv.org/abs/2603.13484",
+        "https://arxiv.org/abs/2605.23786",
+        "https://arxiv.org/abs/2410.22470",
+        "https://arxiv.org/abs/2510.15145",
+        "https://arxiv.org/abs/2605.03577",
+        "https://arxiv.org/abs/2605.15273",
+        "https://arxiv.org/abs/2606.09616",
+        "https://arxiv.org/abs/2606.14271",
+        "https://arxiv.org/abs/2606.23068",
+        "https://arxiv.org/abs/2507.17742",
+        "https://arxiv.org/abs/2512.00518",
+        "https://arxiv.org/abs/2606.25205",
+        "https://arxiv.org/abs/2511.07066"
+      ]
+    },
+    {
       "date": "2026-06-29",
       "title": "astroReport 日报 2026-06-29",
       "guid": "astroreport-2026-06-29",
