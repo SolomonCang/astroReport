@@ -1,6 +1,18 @@
 {
   "reports": [
     {
+      "date": "2026-07-06",
+      "title": "astroReport 日报 2026-07-06",
+      "guid": "astroreport-2026-07-06",
+      "created_at": "2026-07-06T03:12:27.961286+00:00",
+      "expire_at": "2026-07-11T03:12:27.961286+00:00",
+      "report_path": "reports/2026-07-06.md",
+      "digest_path": "reports/2026-07-06.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-07-06.md",
+      "digest_summary": "今日没有匹配的新文献。",
+      "paper_links": []
+    },
+    {
       "date": "2026-07-03",
       "title": "astroReport 日报 2026-07-03",
       "guid": "astroreport-2026-07-03",
