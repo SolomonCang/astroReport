@@ -1,6 +1,40 @@
 {
   "reports": [
     {
+      "date": "2026-07-10",
+      "title": "astroReport 日报 2026-07-10",
+      "guid": "astroreport-2026-07-10",
+      "created_at": "2026-07-10T03:10:01.997526+00:00",
+      "expire_at": "2026-07-15T03:10:01.997526+00:00",
+      "report_path": "reports/2026-07-10.md",
+      "digest_path": "reports/2026-07-10.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-07-10.md",
+      "digest_summary": "本次文献涵盖多个方向，其中恒星与双星演化、星系与宇宙学、以及高能天体物理是主要主题。在恒星与双星方面，有3篇论文涉及双星系统（包括后共有包层双星、宽轨道双星质量转移、年轻恒星喷流），2篇关于恒星化学丰度（氧丰度、碳星），1篇关于太阳耀斑准周期脉动。星系与宇宙学方面，有4篇关于星系周介质与星际介质（多相气体、HI巡天、再电离、尘埃遮蔽星系），2篇关于暗物质（球状星团动力学、玻色-爱因斯坦凝聚暗物质），2篇关于星系形成与演化（高红移宁静星系、AGN外流），以及1篇关于引力透镜。高能天体物理方面，有2篇关于超新星遗迹与中子星并合，1篇关于中微子模拟。此外，还有1篇关于天王星卫星表面物质，1篇关于子结构识别算法。最值得关注的是文献2（An eclipsing CEMP candidate）和文献3（Reframing the Wide Eccentric Binary Problem），前者发现了一颗食双星中的碳增强金属贫乏星候选体，后者提出了广义质量转移模型解释宽轨道双星的偏心率。\n\n重点方向：恒星与双星[1, 2, 3, 4, 5]、星系与宇宙学[6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]、高能天体物理[17, 18, 19]、太阳系与行星[20]、方法与算法[21]",
+      "paper_links": [
+        "https://arxiv.org/abs/2604.09919",
+        "https://arxiv.org/abs/2605.12024",
+        "https://arxiv.org/abs/2606.09464",
+        "https://arxiv.org/abs/2606.18862",
+        "https://arxiv.org/abs/2607.05526",
+        "https://arxiv.org/abs/2604.08422",
+        "https://arxiv.org/abs/2606.31539",
+        "https://arxiv.org/abs/2504.02476",
+        "https://arxiv.org/abs/2511.00229",
+        "https://arxiv.org/abs/2601.20473",
+        "https://arxiv.org/abs/2603.12328",
+        "https://arxiv.org/abs/2604.21405",
+        "https://arxiv.org/abs/2605.20121",
+        "https://arxiv.org/abs/2605.29069",
+        "https://arxiv.org/abs/2607.00408",
+        "https://arxiv.org/abs/2501.16292",
+        "https://arxiv.org/abs/2605.01099",
+        "https://arxiv.org/abs/2606.19490",
+        "https://arxiv.org/abs/2601.21086",
+        "https://arxiv.org/abs/2607.05600",
+        "https://arxiv.org/abs/2512.09359"
+      ]
+    },
+    {
       "date": "2026-07-09",
       "title": "astroReport 日报 2026-07-09",
       "guid": "astroreport-2026-07-09",
