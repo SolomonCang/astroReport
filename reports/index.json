@@ -348,18 +348,6 @@
         "https://arxiv.org/abs/2601.09644",
         "https://arxiv.org/abs/2607.15940"
       ]
-    },
-    {
-      "date": "2026-08-03",
-      "title": "astroReport 日报 2026-08-03",
-      "guid": "astroreport-2026-08-03",
-      "created_at": "2026-08-03T03:08:32.385734+00:00",
-      "expire_at": "2026-08-08T03:08:32.385734+00:00",
-      "report_path": "reports/2026-08-03.md",
-      "digest_path": "reports/2026-08-03.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-08-03.md",
-      "digest_summary": "今日没有匹配的新文献。",
-      "paper_links": []
     }
   ]
 }
