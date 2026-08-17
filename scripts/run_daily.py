@@ -5,11 +5,14 @@ import json
 import os
 import re
 from pathlib import Path
+from typing import Any
 from zoneinfo import ZoneInfo
 
 CONFIG_PATH = "config/config.json"
 DEFAULT_RETENTION_DAYS = 15
 DEFAULT_DEDUP_LOOKBACK_DAYS = 15
+MAX_GROUP_SIZE = 12
+MAX_CATCHALL_RATIO = 0.20
 VERSION_SUFFIX_RE = re.compile(r"v\d+$")
 SUMMARY_REF_RE = re.compile(r"(文献\s*)(\d+)")
 
@@ -107,6 +110,142 @@ def _collect_recent_paper_keys(index: dict, report_date: str,
                 keys.add(key)
 
     return keys
+
+
+def _split_oversized_groups(groups: list[dict], max_size: int) -> list[dict]:
+    """对超过 max_size 的组进行拆分，保持论文顺序。"""
+    result: list[dict] = []
+    for g in groups:
+        indices = list(g.get("indices", []))
+        if len(indices) <= max_size:
+            result.append(g)
+            continue
+
+        chunks = [
+            indices[i:i + max_size] for i in range(0, len(indices), max_size)
+        ]
+        label = str(g.get("label", "")).strip()
+        intro = str(g.get("intro", "")).strip()
+        suffixes = ["（一）", "（二）", "（三）", "（四）", "（五）"]
+        for idx, chunk in enumerate(chunks):
+            suffix = suffixes[idx] if idx < len(suffixes) else f" ({idx + 1})"
+            result.append({
+                "label": f"{label}{suffix}" if label else label,
+                "intro": intro,
+                "indices": chunk,
+            })
+    return result
+
+
+def _validate_groups(groups: list[dict], paper_count: int) -> list[dict]:
+    """移除空组、去重索引、检查覆盖率，并给出兜底提示。"""
+    valid_range = set(range(1, paper_count + 1))
+    seen: set[int] = set()
+    clean: list[dict] = []
+
+    for g in groups:
+        label = str(g.get("label", "")).strip()
+        raw_indices = g.get("indices", [])
+        if not label or not isinstance(raw_indices, list):
+            continue
+        unique = []
+        for i in raw_indices:
+            try:
+                i_int = int(i)
+            except (TypeError, ValueError):
+                continue
+            if i_int in valid_range and i_int not in seen:
+                unique.append(i_int)
+                seen.add(i_int)
+        if unique:
+            clean.append({
+                "label": label,
+                "intro": str(g.get("intro", "")).strip(),
+                "indices": unique,
+            })
+
+    # 把未被任何组覆盖的论文归入兜底组
+    missing = sorted(valid_range - seen)
+    if missing:
+        clean.append({
+            "label": "其他天文",
+            "intro": "",
+            "indices": missing,
+        })
+
+    # 兜底组过大时发出警告（prompt 已要求 LLM 避免）
+    for g in clean:
+        if g["label"].startswith("其他天文") and len(g["indices"]) > paper_count * MAX_CATCHALL_RATIO:
+            print(f"      警告：兜底分类 '{g['label']}' 包含 {len(g['indices'])} 篇，超过 {int(MAX_CATCHALL_RATIO*100)}%")
+
+    return clean
+
+
+def _build_highlights(
+    papers: list[dict[str, Any]],
+    summaries: dict[str, dict[str, Any]],
+    related_ids: list[str],
+    count: int = 3,
+) -> list[dict[str, Any]]:
+    """根据 related_ids 构建精选亮点论文列表。"""
+    highlights: list[dict[str, Any]] = []
+    id_to_paper: dict[str, dict[str, Any]] = {}
+    for p in papers:
+        for field in ("id", "link", "pdf_link"):
+            key = _normalize_paper_key(str(p.get(field, "")))
+            if key:
+                id_to_paper[key] = p
+
+    for rid in related_ids[:count]:
+        key = _normalize_paper_key(str(rid))
+        paper = id_to_paper.get(key)
+        if not paper:
+            continue
+        sid = paper.get("id", "")
+        sitem = summaries.get(sid, {})
+        highlights.append({
+            "title": paper.get("title", "Untitled"),
+            "authors": ", ".join(paper.get("authors", [])[:5]) or "Unknown",
+            "affiliation": paper.get("first_author_affiliation", ""),
+            "summary": sitem.get("summary", ""),
+            "keywords": sitem.get("keywords", []),
+            "link": paper.get("link", ""),
+            "pdf_link": paper.get("pdf_link", ""),
+        })
+    return highlights
+
+
+def _enrich_groups_for_email(
+    groups: list[dict[str, Any]],
+    papers: list[dict[str, Any]],
+    summaries: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """把分组索引转换成可直接用于邮件渲染的论文列表。"""
+    enriched: list[dict[str, Any]] = []
+    for g in groups:
+        group_papers: list[dict[str, Any]] = []
+        for idx in g.get("indices", []):
+            if not (1 <= idx <= len(papers)):
+                continue
+            paper = papers[idx - 1]
+            sid = paper.get("id", "")
+            sitem = summaries.get(sid, {})
+            group_papers.append({
+                "title": paper.get("title", "Untitled"),
+                "authors": ", ".join(paper.get("authors", [])[:5]) or "Unknown",
+                "affiliation": paper.get("first_author_affiliation", ""),
+                "summary": sitem.get("summary", ""),
+                "keywords": sitem.get("keywords", []),
+                "link": paper.get("link", ""),
+                "pdf_link": paper.get("pdf_link", ""),
+            })
+        enriched.append({
+            "label": g.get("label", "未分类"),
+            "intro": g.get("intro", ""),
+            "indices": list(g.get("indices", [])),
+            "papers": group_papers,
+        })
+    return enriched
 
 
 def main() -> int:
@@ -246,6 +385,11 @@ def main() -> int:
     global_summary = summary_payload.get("global_summary", "今日无更新。")
     groups = summary_payload.get("groups", [])
 
+    # ── 分组后处理：校验、拆分大组、补兜底 ────────────────────────
+    if groups:
+        groups = _validate_groups(groups, len(papers))
+        groups = _split_oversized_groups(groups, MAX_GROUP_SIZE)
+
     if groups:
         group_parts = []
         for g in groups:
@@ -278,10 +422,10 @@ def main() -> int:
         summary_body = _remap_summary_indices(summary_body, old_to_new)
 
         groups = [{
-            "label":
-            g["label"],
-            "indices":
-            sorted(old_to_new[i] for i in g["indices"] if i in old_to_new)
+            "label": g["label"],
+            "intro": g.get("intro", ""),
+            "indices": sorted(
+                old_to_new[i] for i in g["indices"] if i in old_to_new)
         } for g in groups]
         # 更新拼接到 global_summary 的 topics_line
         group_parts = []
@@ -290,6 +434,10 @@ def main() -> int:
             group_parts.append(f"{g['label']}[{idx_str}]")
         topics_line = "重点方向：" + "、".join(group_parts)
         global_summary = f"{summary_body}\n\n{topics_line}"
+
+    # ── 构建精选亮点 ──────────────────────────────────────────────
+    related_ids = summary_payload.get("related_ids", [])
+    highlights = _build_highlights(papers, summary_items, related_ids, count=3)
 
     # ── 步骤 5：最终完整渲染（含全局总结和分组）─────────────────
     print("[5/7] 最终渲染报告")
@@ -348,10 +496,14 @@ def main() -> int:
     from_email = cfg.get("email", {}).get("from_email",
                                           "onboarding@resend.dev")
     print(f"[6/7] 发送邮件  收件人={recipients}")
+    email_groups = _enrich_groups_for_email(groups, papers, summary_items)
     html = build_digest_html(
         report_date=report_date,
         report_url=report_url,
-        digest_text=digest_text,
+        global_summary=global_summary,
+        paper_count=len(papers),
+        groups=email_groups,
+        highlights=highlights,
     )
 
     email_ok = send_digest_email(

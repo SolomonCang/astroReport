@@ -288,6 +288,7 @@ def _summarize_global_and_groups(
             "related_ids": ["与全局总结最相关的文献 arxiv URL，按相关性排序，最多5个"],
             "groups": [{
                 "label": "主题名称（中文，10字以内，尽量对应 focus_skill 中的分类方向）",
+                "intro": "该主题一句话概述（15字以内），说明本组共同关注点",
                 "indices": "[属于该主题的文献编号列表，整数数组，对应输入的 index 字段]",
             }],
         },
@@ -295,7 +296,9 @@ def _summarize_global_and_groups(
             "严格返回 JSON 对象，不要 markdown 代码块",
             "global_summary 必须体现 focus_skill 关注方向，并给出 related_ids",
             "groups 必须覆盖全部文献，每篇只出现在一个组中，共 3-8 个组",
-            "groups 的 label 优先使用 focus_skill 中的分类名称，其余归入'其他天文'或更具体的子类",
+            "groups 的 label 优先使用 focus_skill 中的分类名称；其余文献按具体物理主题归入更细的子类，不得已才使用'其他天文'",
+            "单个 group 的文献数不得超过 12 篇；若某主题文献过多，请拆成 2 个更具体的子主题",
+            "若使用'其他天文'，其文献数不得超过总文献数的 20%",
             "groups 的 indices 必须是整数数组",
         ],
         "papers":
@@ -344,6 +347,7 @@ def _summarize_global_and_groups(
                 continue
             label = str(g.get("label", "")).strip()
             raw_indices = g.get("indices", [])
+            intro = str(g.get("intro", "")).strip()
             if not label or not isinstance(raw_indices, list):
                 continue
             valid_indices = [
@@ -351,6 +355,6 @@ def _summarize_global_and_groups(
                 if isinstance(i, (int, float)) and int(i) in valid_range
             ]
             if valid_indices:
-                groups.append({"label": label, "indices": valid_indices})
+                groups.append({"label": label, "intro": intro, "indices": valid_indices})
 
     return summary_text, related_ids, groups

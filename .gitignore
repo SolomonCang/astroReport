@@ -30,7 +30,8 @@ dist/
 *.swp
 *.swo
 
-# Logs and local runtime temp files
+# Local preview / test outputs
+tmp/
 *.log
 *.tmp
 *.temp

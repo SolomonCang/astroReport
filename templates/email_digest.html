@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>astroReport {{ report_date }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #eef3f8;
+            color: #1f2a37;
+            font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+        .wrap {
+            width: 100%;
+            padding: 28px 14px;
+            box-sizing: border-box;
+        }
+        .card {
+            max-width: 760px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #dbe3ec;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .hero {
+            background: linear-gradient(135deg, #0b3a5b 0%, #175676 100%);
+            color: #ffffff;
+            padding: 22px 24px 20px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 12px;
+            letter-spacing: 0.03em;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+        }
+        .title {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.3;
+            font-weight: 700;
+        }
+        .date {
+            margin-top: 6px;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .body {
+            padding: 22px 24px 20px;
+        }
+        .metrics {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .metric {
+            background: #f4f8fc;
+            border: 1px solid #dbe9f5;
+            border-radius: 10px;
+            padding: 10px 14px;
+            text-align: center;
+            min-width: 72px;
+        }
+        .metric-value {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b3a5b;
+            line-height: 1.2;
+        }
+        .metric-label {
+            display: block;
+            font-size: 12px;
+            color: #5b6b7d;
+            margin-top: 2px;
+        }
+        .cta {
+            display: inline-block;
+            margin-bottom: 18px;
+            background: #0b3a5b;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .summary {
+            font-size: 15px;
+            line-height: 1.82;
+            color: #1f2a37;
+            word-break: break-word;
+            margin-bottom: 8px;
+        }
+        .section-title {
+            margin: 22px 0 12px;
+            font-size: 18px;
+            line-height: 1.4;
+            color: #0b3a5b;
+        }
+        .section-title--category {
+            margin-top: 28px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #dbe9f5;
+        }
+        .count {
+            font-size: 14px;
+            color: #5b6b7d;
+            font-weight: 400;
+        }
+        .topic-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 4px 0 16px;
+        }
+        .topic-tag {
+            display: inline-block;
+            background: #e8f0f8;
+            color: #0b3a5b;
+            font-size: 13px;
+            line-height: 1.5;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #c4d8eb;
+            word-break: break-all;
+        }
+        .topic-tag-link {
+            text-decoration: none;
+            color: #0b3a5b !important;
+        }
+        .topic-tag-link:hover {
+            background: #d8e6f4;
+        }
+        .category-intro {
+            margin: -6px 0 14px;
+            font-size: 14px;
+            color: #4a5a6a;
+            line-height: 1.6;
+        }
+        .paper-card {
+            border: 1px solid #e2eaf3;
+            border-radius: 10px;
+            padding: 14px 14px 12px;
+            margin: 0 0 12px;
+            background: #f9fbfe;
+        }
+        .paper-card--highlight {
+            border-left: 4px solid #0b3a5b;
+            background: #f0f6fc;
+        }
+        .paper-title {
+            margin: 0 0 8px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #12344d;
+        }
+        .paper-title a {
+            color: #12344d !important;
+            text-decoration: none;
+            border-bottom: 1px solid #9fb7cc;
+        }
+        .paper-index {
+            color: #175676;
+            font-weight: 700;
+        }
+        .paper-meta {
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: #5b6b7d;
+            line-height: 1.5;
+        }
+        .paper-authors {
+            font-style: italic;
+        }
+        .paper-affil {
+            color: #7a8fa0;
+        }
+        .paper-keywords {
+            margin: 0 0 8px;
+            line-height: 1.4;
+        }
+        .kw-tag {
+            display: inline-block;
+            font-size: 12px;
+            color: #175676;
+            background: #e4eff8;
+            border-radius: 4px;
+            padding: 2px 6px;
+            margin: 0 4px 4px 0;
+        }
+        .paper-summary {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.75;
+            color: #2d3a48;
+        }
+        .paper-actions {
+            margin-top: 10px;
+        }
+        .paper-link {
+            display: inline-block;
+            margin-right: 12px;
+            font-size: 13px;
+            color: #0b3a5b !important;
+            text-decoration: none;
+            border-bottom: 1px solid #9fb7cc;
+        }
+        .foot {
+            padding: 12px 24px 18px;
+            border-top: 1px solid #e6edf5;
+            font-size: 12px;
+            color: #5b6b7d;
+        }
+        @media only screen and (max-width: 600px) {
+            .metrics {
+                gap: 10px;
+            }
+            .metric {
+                padding: 8px 10px;
+                min-width: 60px;
+            }
+            .metric-value {
+                font-size: 18px;
+            }
+            .body {
+                padding: 18px 16px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="card">
+            <div class="hero">
+                <div class="tag">astroReport</div>
+                <h1 class="title">每日文献精简日报</h1>
+                <div class="date">{{ report_date }}</div>
+            </div>
+            <div class="body">
+                <div class="metrics">
+                    <div class="metric">
+                        <span class="metric-value">{{ paper_count }}</span>
+                        <span class="metric-label">收录文献</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">{{ groups|length }}</span>
+                        <span class="metric-label">主题分类</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">{{ highlights|length }}</span>
+                        <span class="metric-label">今日精选</span>
+                    </div>
+                </div>
+
+                <a class="cta" href="{{ report_url }}" target="_blank" rel="noopener noreferrer">查看完整版报告</a>
+
+                <div class="summary">{{ global_summary_html }}</div>
+
+                {% if groups %}
+                <h2 class="section-title">分类速览</h2>
+                <div class="topic-group">
+                    {% for g in groups %}
+                    <a class="topic-tag topic-tag-link" href="#cat-{{ loop.index }}">{{ g.label }} <span class="count">{{ g.indices|length }}</span></a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if highlights %}
+                <h2 class="section-title">精选亮点</h2>
+                {% for h in highlights %}
+                <article class="paper-card paper-card--highlight">
+                    <h3 class="paper-title">{{ h.title }}</h3>
+                    {% if h.authors or h.affiliation %}
+                    <p class="paper-meta">
+                        {% if h.authors %}<span class="paper-authors">{{ h.authors }}</span>{% endif %}
+                        {% if h.authors and h.affiliation %}&nbsp;|&nbsp;{% endif %}
+                        {% if h.affiliation %}<span class="paper-affil">{{ h.affiliation }}</span>{% endif %}
+                    </p>
+                    {% endif %}
+                    {% if h.keywords %}
+                    <p class="paper-keywords">
+                        {% for kw in h.keywords %}<span class="kw-tag">{{ kw }}</span>{% endfor %}
+                    </p>
+                    {% endif %}
+                    <p class="paper-summary">{{ h.summary }}</p>
+                    <div class="paper-actions">
+                        <a class="paper-link" href="{{ h.link }}" target="_blank" rel="noopener noreferrer">查看原文</a>
+                        {% if h.pdf_link %}<a class="paper-link" href="{{ h.pdf_link }}" target="_blank" rel="noopener noreferrer">PDF</a>{% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+                {% endif %}
+
+                {% for g in groups %}
+                <h2 class="section-title section-title--category" id="cat-{{ loop.index }}">{{ g.label }} <span class="count">({{ g.indices|length }} 篇)</span></h2>
+                {% if g.intro %}<p class="category-intro">{{ g.intro }}</p>{% endif %}
+                {% for p in g.papers %}
+                <article class="paper-card">
+                    <h3 class="paper-title"><span class="paper-index">{{ loop.index }}.</span> <a href="{{ p.link }}" target="_blank" rel="noopener noreferrer">{{ p.title }}</a></h3>
+                    {% if p.authors or p.affiliation %}
+                    <p class="paper-meta">
+                        {% if p.authors %}<span class="paper-authors">{{ p.authors }}</span>{% endif %}
+                        {% if p.authors and p.affiliation %}&nbsp;|&nbsp;{% endif %}
+                        {% if p.affiliation %}<span class="paper-affil">{{ p.affiliation }}</span>{% endif %}
+                    </p>
+                    {% endif %}
+                    {% if p.keywords %}
+                    <p class="paper-keywords">
+                        {% for kw in p.keywords %}<span class="kw-tag">{{ kw }}</span>{% endfor %}
+                    </p>
+                    {% endif %}
+                    <p class="paper-summary">{{ p.summary }}</p>
+                    <div class="paper-actions">
+                        <a class="paper-link" href="{{ p.link }}" target="_blank" rel="noopener noreferrer">查看原文</a>
+                        {% if p.pdf_link %}<a class="paper-link" href="{{ p.pdf_link }}" target="_blank" rel="noopener noreferrer">PDF</a>{% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="foot">此邮件为自动发送。如有问题，请联系管理员: <a href="mailto:astrocang@gmail.com">astrocang@gmail.com</a>。</div>
+        </div>
+    </div>
+</body>
+</html>
