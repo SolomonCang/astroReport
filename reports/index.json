@@ -220,47 +220,6 @@
         "https://arxiv.org/abs/2608.10212v1",
         "https://arxiv.org/abs/2608.09890v1"
       ]
-    },
-    {
-      "date": "2026-08-11",
-      "title": "astroReport 日报 2026-08-11",
-      "guid": "astroreport-2026-08-11",
-      "created_at": "2026-08-11T02:45:24.872646+00:00",
-      "expire_at": "2026-08-16T02:45:24.872646+00:00",
-      "report_path": "reports/2026-08-11.md",
-      "digest_path": "reports/2026-08-11.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-08-11.md",
-      "digest_summary": "今日文献涵盖恒星磁场与活动、系外行星、星际介质与尘埃、分子天文、星系与AGN等多个方向。恒星活动方面，有太阳耀斑硬X射线成像、日冕波导模拟、日冕雨模拟及CME传播研究，其中HXI-PINN物理约束网络显著提升成像质量。系外行星方面，TOI-7475b的发现和55 Cancri e的热辐射研究值得关注。星际介质方面，L1527 IRS的化学普查和JWST中性氦探测提供了新视角。星系方向涉及星团、AGN、空洞等。最值得关注的是TOI-7475b的发现（作者未提供）和L1527 IRS的化学普查（作者未提供），分别对行星形成和恒星形成化学有重要贡献。\n\n重点方向：恒星磁场与活动[1, 2, 3, 4]、系外行星[5, 6, 7]、星际介质与尘埃[8, 9, 10, 11]、分子天文[8]、星系与AGN[12, 13, 14, 15, 16, 17, 18, 19, 20, 21]、恒星与演化[22, 23, 24]、其他天文[25, 26, 27, 28]",
-      "paper_links": [
-        "https://arxiv.org/abs/2608.09646v1",
-        "https://arxiv.org/abs/2608.08812v1",
-        "https://arxiv.org/abs/2608.08562v1",
-        "https://arxiv.org/abs/2608.08470v1",
-        "https://arxiv.org/abs/2608.09679v1",
-        "https://arxiv.org/abs/2608.09241v1",
-        "https://arxiv.org/abs/2608.08908v1",
-        "https://arxiv.org/abs/2608.09627v1",
-        "https://arxiv.org/abs/2608.09587v1",
-        "https://arxiv.org/abs/2608.09511v1",
-        "https://arxiv.org/abs/2608.09418v1",
-        "https://arxiv.org/abs/2608.09662v1",
-        "https://arxiv.org/abs/2608.09566v1",
-        "https://arxiv.org/abs/2608.09439v1",
-        "https://arxiv.org/abs/2608.09320v1",
-        "https://arxiv.org/abs/2608.09284v1",
-        "https://arxiv.org/abs/2608.09192v1",
-        "https://arxiv.org/abs/2608.09086v1",
-        "https://arxiv.org/abs/2608.09064v1",
-        "https://arxiv.org/abs/2608.08945v1",
-        "https://arxiv.org/abs/2608.08560v1",
-        "https://arxiv.org/abs/2608.09582v1",
-        "https://arxiv.org/abs/2608.09341v1",
-        "https://arxiv.org/abs/2608.08891v1",
-        "https://arxiv.org/abs/2608.09678v1",
-        "https://arxiv.org/abs/2608.09471v1",
-        "https://arxiv.org/abs/2608.09350v1",
-        "https://arxiv.org/abs/2608.09340v1"
-      ]
     }
   ]
 }
