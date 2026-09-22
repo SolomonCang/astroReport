@@ -211,41 +211,6 @@
         "https://arxiv.org/abs/2511.14356",
         "https://arxiv.org/abs/2607.12816"
       ]
-    },
-    {
-      "date": "2026-09-17",
-      "title": "astroReport 日报 2026-09-17",
-      "guid": "astroreport-2026-09-17",
-      "created_at": "2026-09-17T02:19:18.924368+00:00",
-      "expire_at": "2026-09-22T02:19:18.924368+00:00",
-      "report_path": "reports/2026-09-17.md",
-      "digest_path": "reports/2026-09-17.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-09-17.md",
-      "digest_summary": "本批22篇文献以星系与宇宙学方向为主，恒星磁场、磁活动、系外行星、DIB、尘埃与复杂有机分子等 focus_skill 方向覆盖较少。恒星相关研究集中在超新星物理与核反应率：对不稳定性超新星中氦燃烧反应率对56Ni合成的温度分辨敏感性，以及强磁场对核坍缩超新星中微子输运的显著影响，后者是当日最值得关注的论文之一，作者指出磁场量子化改变弱作用截面与中微子不透明度。另一值得关注的是利用红巨星分支星等差对轴子-电子耦合给出距离无关约束，展示了恒星演化探针在基础物理中的价值。系外行星方向仅涉及超旋转喷流对高分辨率透射光谱相位曲线的调制，以及环状盘对行星形成参数的诊断。尘埃与消光在红点宿主星系UV红化、超薄星系近红外形态中有所体现，DIB 与复杂有机分子方向本批无直接文献。\n\n重点方向：恒星磁场与超新星[1, 2, 3, 4]、恒星活动与基础物理[5, 6]、系外行星与行星形成[7, 8]、银河系与星流[9, 10, 11]、高红移星系与AGN[12, 13, 14, 15, 16]、尘埃与消光[17]、宇宙学与暗物质[18, 19, 20, 21]、其他天文[22]",
-      "paper_links": [
-        "https://arxiv.org/abs/2601.21691",
-        "https://arxiv.org/abs/2605.27264",
-        "https://arxiv.org/abs/2405.11555",
-        "https://arxiv.org/abs/2605.02826",
-        "https://arxiv.org/abs/2607.08081",
-        "https://arxiv.org/abs/2609.08504",
-        "https://arxiv.org/abs/2606.23910",
-        "https://arxiv.org/abs/2609.00140",
-        "https://arxiv.org/abs/2504.11687",
-        "https://arxiv.org/abs/2606.24706",
-        "https://arxiv.org/abs/2607.00443",
-        "https://arxiv.org/abs/2602.11270",
-        "https://arxiv.org/abs/2604.07076",
-        "https://arxiv.org/abs/2604.21007",
-        "https://arxiv.org/abs/2609.09049",
-        "https://arxiv.org/abs/2609.13444",
-        "https://arxiv.org/abs/2605.14693",
-        "https://arxiv.org/abs/2512.13682",
-        "https://arxiv.org/abs/2602.02484",
-        "https://arxiv.org/abs/2606.12137",
-        "https://arxiv.org/abs/2609.08825",
-        "https://arxiv.org/abs/2604.16195"
-      ]
     }
   ]
 }
