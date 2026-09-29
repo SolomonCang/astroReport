@@ -1,6 +1,32 @@
 {
   "reports": [
     {
+      "date": "2026-09-29",
+      "title": "astroReport 日报 2026-09-29",
+      "guid": "astroreport-2026-09-29",
+      "created_at": "2026-09-29T02:21:06.727159+00:00",
+      "expire_at": "2026-10-04T02:21:06.727159+00:00",
+      "report_path": "reports/2026-09-29.md",
+      "digest_path": "reports/2026-09-29.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-09-29.md",
+      "digest_summary": "本日文献覆盖恒星磁场与活动、系外行星相关、尘埃与消光、复杂有机分子及若干银河系/高能天体物理方向。恒星活动方向以太阳黑子史料与D区电离层模拟为代表，前者为黑子数重标定提供关键史料，后者揭示电子密度双峰结构；复杂有机分子方向报道了P+与C2H2反应生成HCCP+的星际磷化学新路径。最值得关注的是Carrington 1870年最后一张黑子图的发现（Carrington），为长期太阳活动重建提供一手史料；以及P+与C2H2反应研究（作者未具名），更新了星际含磷分子数据库。此外，尘埃与消光、系外行星相关方向文献较少，DIB方向本日无直接文献。\n\n重点方向：恒星磁场与活动[1, 2, 3]、复杂有机分子[4]、尘埃与消光[5]、系外行星相关[6]、银河系与高能天体[7, 8, 9, 10, 11, 12]、其他天文[13]",
+      "paper_links": [
+        "https://arxiv.org/abs/2609.33933v1",
+        "https://arxiv.org/abs/2609.33317v1",
+        "https://arxiv.org/abs/2609.33198v1",
+        "https://arxiv.org/abs/2609.33657v1",
+        "https://arxiv.org/abs/2609.33170v1",
+        "https://arxiv.org/abs/2609.33925v1",
+        "https://arxiv.org/abs/2609.33917v1",
+        "https://arxiv.org/abs/2609.33817v1",
+        "https://arxiv.org/abs/2609.33364v1",
+        "https://arxiv.org/abs/2609.33222v1",
+        "https://arxiv.org/abs/2609.33211v1",
+        "https://arxiv.org/abs/2609.33199v1",
+        "https://arxiv.org/abs/2609.33877v1"
+      ]
+    },
+    {
       "date": "2026-09-28",
       "title": "astroReport 日报 2026-09-28",
       "guid": "astroreport-2026-09-28",
