@@ -1,6 +1,38 @@
 {
   "reports": [
     {
+      "date": "2026-10-06",
+      "title": "astroReport 日报 2026-10-06",
+      "guid": "astroreport-2026-10-06",
+      "created_at": "2026-10-06T02:22:59.604336+00:00",
+      "expire_at": "2026-10-11T02:22:59.604336+00:00",
+      "report_path": "reports/2026-10-06.md",
+      "digest_path": "reports/2026-10-06.digest.md",
+      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-10-06.md",
+      "digest_summary": "本日文献覆盖恒星磁场与磁活动、系外行星、尘埃与消光、复杂有机分子、双星演化及星际介质等多个方向。恒星相关研究以双星族合成、共包层演化与太阳风MHD代理模型为主，未出现直接Zeeman或ZDI磁场测量论文；系外行星方向聚焦大气-内部耦合与逃逸岩质外流。复杂有机分子方向，ALMA在N83热核中证认CH₃OH、CH₃CN、CH₃OCH₃等分子，是分子天文的重要进展；尘埃与消光方向则通过星际彗星3I/ATLAS的SED与偏振揭示高孔隙暗尘埃特征。最值得关注的是ALMA对N83恒星形成区分子复杂性的观测，以及SPHERE/ZIMPOL对R Aqr尘埃盘与喷流动力学的四历元解析。\n\n重点方向：复杂有机分子[1]、尘埃与消光[2, 3]、系外行星[4, 5]、恒星磁场与活动[6, 7]、双星与致密星[8, 9, 10, 11]、恒星与变星观测[12, 13]、星际介质与星系团[14, 15]、其他天文[16, 17, 18, 19]",
+      "paper_links": [
+        "https://arxiv.org/abs/2610.05447v1",
+        "https://arxiv.org/abs/2610.05118v1",
+        "https://arxiv.org/abs/2610.04919v1",
+        "https://arxiv.org/abs/2610.05287v1",
+        "https://arxiv.org/abs/2610.04986v1",
+        "https://arxiv.org/abs/2610.05657v1",
+        "https://arxiv.org/abs/2610.05424v1",
+        "https://arxiv.org/abs/2610.05773v1",
+        "https://arxiv.org/abs/2610.05769v1",
+        "https://arxiv.org/abs/2610.05720v1",
+        "https://arxiv.org/abs/2610.05226v1",
+        "https://arxiv.org/abs/2610.05494v1",
+        "https://arxiv.org/abs/2610.05091v1",
+        "https://arxiv.org/abs/2610.05351v1",
+        "https://arxiv.org/abs/2610.05192v1",
+        "https://arxiv.org/abs/2610.05871v1",
+        "https://arxiv.org/abs/2610.05372v1",
+        "https://arxiv.org/abs/2610.05358v1",
+        "https://arxiv.org/abs/2610.04886v1"
+      ]
+    },
+    {
       "date": "2026-10-05",
       "title": "astroReport 日报 2026-10-05",
       "guid": "astroreport-2026-10-05",
