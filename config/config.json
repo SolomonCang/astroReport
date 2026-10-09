@@ -13,7 +13,7 @@
     "api_base": "https://api.deepseek.com"
   },
   "email": {
-    "from_email": "report@astrocang.space"
+    "from_email": "report@astrocang.com"
   },
   "mail_list": [
     "astrocang@gmail.com",

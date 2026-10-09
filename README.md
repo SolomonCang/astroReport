@@ -29,7 +29,7 @@
 - OPENAI_API_BASE: 可选，类 OpenAI 服务 endpoint/base URL
 - RESEND_API_KEY
 
-发件邮箱通过 `config/config.json` 的 `email.from_email` 配置，收件邮箱通过 `mail_list` 配置。日报和手动邮件测试共用这份配置。
+发件邮箱通过 `config/config.json` 的 `email.from_email` 配置，当前为 `report@astrocang.com`；收件邮箱通过 `mail_list` 配置。日报和手动邮件测试共用这份配置。
 
 OPENAI_API_BASE 示例：
 
@@ -77,13 +77,13 @@ OPENAI_API_BASE 示例：
 
 - 收件邮箱是否收到测试邮件
 
-若 Resend 域名显示 Failed，检查阿里云 DNS 中下列记录是否启用，并与 Resend Domains 页面保持一致：
+若 Resend 域名显示 Failed，检查阿里云 DNS 中下列 `astrocang.com` 记录是否启用，并与 Resend Domains 页面保持一致：
 
 - `resend._domainkey` 的 TXT 记录：使用 Resend 提供的完整 DKIM 公钥。
-- `send` 的 TXT 记录：`v=spf1 include:amazonses.com ~all`。
-- `send` 的 MX 记录：`feedback-smtp.ap-northeast-1.amazonses.com`，优先级 `10`（当前域名位于东京区域）。
+- `rsend` 的 CNAME 记录：`rsend-apne1.forge.rmta.net`。
+- `send` 的 CNAME 记录：`send.forge.rmta.net`。
 
-修正或重新启用后，在 Resend 域名详情点击 Restart，等待验证状态变为 Verified。邮件失败不会阻止日报文件生成，因此 Actions 显示成功时仍需检查日志中的 `email_sent`；Resend 返回的错误会显示为工作流警告。
+以上是新域名在东京区域生成的配置；新增其他域名时应使用 Resend 为该域名提供的记录。修正或重新启用后，在 Resend 域名详情点击 Restart，等待验证状态变为 Verified。邮件失败不会阻止日报文件生成，因此 Actions 显示成功时仍需检查日志中的 `email_sent`；Resend 返回的错误会显示为工作流警告。
 
 ## 4. 摘要重点（config/focus_area.md）
 

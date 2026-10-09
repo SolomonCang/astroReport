@@ -11,7 +11,7 @@ from typing import Any
 
 ARXIV_API = "https://export.arxiv.org/api/query"
 ARXIV_RSS = "https://export.arxiv.org/rss/{category}"
-USER_AGENT = "astroReportBot/1.0 (contact: report@astrocang.space)"
+USER_AGENT = "astroReportBot/1.0 (contact: report@astrocang.com)"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
 ARXIV_NS = {"arxiv": "http://arxiv.org/schemas/atom"}
 DC_NS = {"dc": "http://purl.org/dc/elements/1.1/"}
