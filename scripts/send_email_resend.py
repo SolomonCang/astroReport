@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import json
 import re
+import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -50,7 +51,18 @@ def send_digest_email(
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             return 200 <= resp.status < 300
-    except Exception:
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        try:
+            message = json.loads(body).get("message", "Resend request failed")
+        except (ValueError, AttributeError):
+            message = "Resend request failed"
+        message = str(message).replace(api_key, "[redacted]")
+        message = " ".join(message.splitlines())
+        print(f"::warning::Resend HTTP {exc.code}: {message}")
+        return False
+    except Exception as exc:
+        print(f"::warning::Resend request failed ({type(exc).__name__})")
         return False
 
 

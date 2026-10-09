@@ -28,8 +28,8 @@
 - OPENAI_MODEL: 可选，默认 gpt-4o-mini
 - OPENAI_API_BASE: 可选，类 OpenAI 服务 endpoint/base URL
 - RESEND_API_KEY
-- RESEND_FROM_EMAIL: 例如 noreply@你的域名
-- REPORT_RECIPIENT_EMAIL: 你的邮箱
+
+发件邮箱通过 `config/config.json` 的 `email.from_email` 配置，收件邮箱通过 `mail_list` 配置。日报和手动邮件测试共用这份配置。
 
 OPENAI_API_BASE 示例：
 
@@ -68,6 +68,7 @@ OPENAI_API_BASE 示例：
 进入 Actions 页面，手动运行 Manual Email Test。
 
 该流程会直接发送一封测试邮件，用于验证 Resend 密钥、发件邮箱和收件邮箱配置是否可用。
+可填写 `recipient_email`，只向指定邮箱发送测试；留空时发送到配置文件中的整个 `mail_list`。
 
 
 运行成功后会在日志中看到 `manual email test sent`。
@@ -75,6 +76,14 @@ OPENAI_API_BASE 示例：
 运行成功后检查：
 
 - 收件邮箱是否收到测试邮件
+
+若 Resend 域名显示 Failed，检查阿里云 DNS 中下列记录是否启用，并与 Resend Domains 页面保持一致：
+
+- `resend._domainkey` 的 TXT 记录：使用 Resend 提供的完整 DKIM 公钥。
+- `send` 的 TXT 记录：`v=spf1 include:amazonses.com ~all`。
+- `send` 的 MX 记录：`feedback-smtp.ap-northeast-1.amazonses.com`，优先级 `10`（当前域名位于东京区域）。
+
+修正或重新启用后，在 Resend 域名详情点击 Restart，等待验证状态变为 Verified。邮件失败不会阻止日报文件生成，因此 Actions 显示成功时仍需检查日志中的 `email_sent`；Resend 返回的错误会显示为工作流警告。
 
 ## 4. 摘要重点（config/focus_area.md）
 
@@ -96,5 +105,5 @@ Cleanup Expired Reports 工作流每天北京时间 10:20 运行一次，删除�
 
 ## 说明
 
-- 当前是单收件人模式，收件邮箱通过 REPORT_RECIPIENT_EMAIL 控制
+- 收件邮箱通过 `config/config.json` 的 `mail_list` 控制
 - 邮件发送失败不会阻塞报告产出

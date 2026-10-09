@@ -2,9 +2,14 @@ name: Manual Email Test
 
 on:
   workflow_dispatch:
+    inputs:
+      recipient_email:
+        description: "测试收件邮箱（留空时使用 config/config.json 中的 mail_list）"
+        required: false
+        type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: manual-test-astro-report
@@ -31,7 +36,7 @@ jobs:
       - name: Send a manual test email
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          TEST_RECIPIENT_EMAIL: ${{ inputs.recipient_email }}
         run: |
           python - <<'PY'
           import datetime as dt
@@ -41,20 +46,21 @@ jobs:
           import urllib.request
 
           resend_api_key = os.getenv("RESEND_API_KEY", "")
-          from_email = os.getenv("RESEND_FROM_EMAIL", "")
 
           with open("config/config.json", "r", encoding="utf-8") as f:
             cfg = json.load(f)
-          to_emails = cfg.get("mail_list", [])
+          from_email = cfg.get("email", {}).get("from_email", "")
+          recipient = os.getenv("TEST_RECIPIENT_EMAIL", "").strip()
+          to_emails = [recipient] if recipient else cfg.get("mail_list", [])
 
           missing = [
             key for key, value in {
               "RESEND_API_KEY": resend_api_key,
-              "RESEND_FROM_EMAIL": from_email,
+              "email.from_email in config/config.json": from_email,
             }.items() if not value
           ]
           if missing:
-            raise SystemExit(f"missing required env: {', '.join(missing)}")
+            raise SystemExit(f"missing required configuration: {', '.join(missing)}")
           if not to_emails:
             raise SystemExit("mail_list is empty in config/config.json")
 
