@@ -19,6 +19,10 @@ on:
         description: "逐篇摘要批大小（用 3 测试固定样本的跨批次行为）"
         type: string
         default: "3"
+      service_probe:
+        description: "仅对比模型、文本/JSON 请求及 /v1 地址，不生成报告"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -40,8 +44,11 @@ jobs:
           PAPER_LIMIT: ${{ inputs.paper_limit }}
           SAMPLE_SOURCE: ${{ inputs.sample_source }}
           BATCH_SIZE: ${{ inputs.batch_size }}
+          SERVICE_PROBE: ${{ inputs.service_probe }}
         run: |
-          if [ "$SAMPLE_SOURCE" = "reference_sample" ]; then
+          if [ "$SERVICE_PROBE" = "true" ]; then
+            python -u -m scripts.check_summary --service-probe
+          elif [ "$SAMPLE_SOURCE" = "reference_sample" ]; then
             python -u -m scripts.check_summary --paper-limit "$PAPER_LIMIT" --batch-size "$BATCH_SIZE" --input-file tests/fixtures/summary_papers.json
           else
             python -u -m scripts.check_summary --paper-limit "$PAPER_LIMIT" --batch-size "$BATCH_SIZE"

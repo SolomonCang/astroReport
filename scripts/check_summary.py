@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import json
 import os
@@ -59,12 +60,55 @@ def sample_papers(limit: int) -> list[dict]:
     return papers
 
 
+def service_probes(url: str, key: str, model: str) -> list[dict]:
+    """Compare short public-content requests without depending on paper inputs."""
+    base = url.removesuffix("/chat/completions").removesuffix("/v1")
+    variants = [
+        ("configured_plain", url, model, False),
+        ("configured_json", url, model, True),
+    ]
+    if urllib.parse.urlsplit(url).hostname == "api.deepseek.com":
+        variants.extend([
+            ("v1_json", base + "/v1/chat/completions", model, True),
+            ("pro_json", base + "/chat/completions", "deepseek-v4-pro", True),
+        ])
+    original_timeout = summarizer.REQUEST_TIMEOUT_SECONDS
+    summarizer.REQUEST_TIMEOUT_SECONDS = 30
+
+    def probe(variant):
+        name, endpoint, selected_model, json_mode = variant
+        payload = {"model": selected_model, "max_tokens": 256,
+                   "messages": [{"role": "user", "content": (
+                       'Return this JSON object only: {"status":"ok"}' if json_mode else 'Reply with OK only.')} ]}
+        if json_mode:
+            payload["response_format"] = {"type": "json_object"}
+        started = time.monotonic()
+        result = {"name": name, "model": selected_model, "endpoint": endpoint, "passed": False}
+        try:
+            response = summarizer._call_api(endpoint, key, payload)
+            content = response["choices"][0]["message"].get("content", "")
+            result["content"] = content
+            result["passed"] = (json.loads(content).get("status") == "ok" if json_mode
+                                else content.strip().strip(".").upper() == "OK")
+        except Exception as exc:
+            result["error"] = f"{type(exc).__name__}: {str(exc).replace(key, '[redacted]')}"
+        result["seconds"] = round(time.monotonic() - started, 2)
+        return result
+
+    try:
+        with ThreadPoolExecutor(max_workers=len(variants)) as pool:
+            return list(pool.map(probe, variants))
+    finally:
+        summarizer.REQUEST_TIMEOUT_SECONDS = original_timeout
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--paper-limit", type=int, default=16)
     parser.add_argument("--output-dir", default="tmp/summary-check")
     parser.add_argument("--input-file", help="Use an existing public-paper input snapshot")
     parser.add_argument("--batch-size", type=int, default=summarizer.BATCH_SIZE)
+    parser.add_argument("--service-probe", action="store_true", help="Compare model/API formats without generating reports")
     args = parser.parse_args()
     if not 1 <= args.paper_limit <= 40 or args.batch_size < 1:
         parser.error("paper-limit must be between 1 and 40")
@@ -104,6 +148,26 @@ def main() -> int:
                 catalog = json.load(response)
         check["available_models"] = [item["id"] for item in catalog.get("data", [])]
         print("Available models: " + json.dumps(check["available_models"]), flush=True)
+        if urllib.parse.urlsplit(cfg["api_base"]).hostname == "api.deepseek.com":
+            balance_request = urllib.request.Request(
+                "https://api.deepseek.com/user/balance", headers={"Authorization": f"Bearer {key}"})
+            with deadline(30):
+                with urllib.request.urlopen(balance_request, timeout=25) as response:
+                    check["account_available"] = json.load(response).get("is_available")
+            print("Account available: " + str(check["account_available"]), flush=True)
+            if check["account_available"] is False:
+                raise ValueError("DeepSeek reports insufficient available balance for API calls")
+        if args.service_probe:
+            check["stage"] = "service_probes"
+            # The normal instrumentation writes sequential response files; these
+            # parallel probes save only their fixed public-content results.
+            summarizer._call_api = original_call
+            check["probes"] = service_probes(summarizer._build_chat_url(cfg["api_base"]), key, cfg["model"])
+            check["passed"] = any(item["passed"] for item in check["probes"])
+            check["stage"] = "complete"
+            return 0 if check["passed"] else 1
+        if cfg["model"] not in check["available_models"]:
+            raise ValueError("Configured model is absent from the provider model catalog")
         check["stage"] = "completion_probe"
         with deadline(120):
             response = instrumented_call(
