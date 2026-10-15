@@ -201,10 +201,12 @@ def main() -> int:
         invalid = [item["id"] for item in items
                    if not re.search(r"[\u4e00-\u9fff]", item.get("summary", ""))
                    or "降级" in item.get("summary", "")]
+        raw_indices = [index for group in summary["groups"] for index in group["indices"]]
         groups = _split_oversized_groups(_validate_groups(summary["groups"], len(papers)), 12)
         indices = [index for group in groups for index in group["indices"]]
         check.update({"fallback_paper_ids": invalid,
                       "group_count": len(groups),
+                      "model_groups_cover_all_once": sorted(raw_indices) == list(range(1, len(papers) + 1)),
                       "groups_cover_all_once": sorted(indices) == list(range(1, len(papers) + 1)),
                       "summary_characters": len(summary["global_summary"]),
                       "author_names_in_global_summary": [name for paper in papers for name in paper["authors"]
@@ -216,8 +218,11 @@ def main() -> int:
         (output / "report.md").write_text(render_full_report(**report_args))
         (output / "digest.md").write_text(render_digest(
             **report_args, report_url="https://github.com/SolomonCang/astroReport"))
-        check["passed"] = (len(items) == len(papers) and not invalid
-                           and check["groups_cover_all_once"]
+        check["passed"] = (bool(papers) and len(items) == len(papers) and not invalid
+                           and check["model_groups_cover_all_once"]
+                           and not check["over_120_characters"]
+                           and bool(summary["global_summary"].strip())
+                           and summary["global_summary"] != "今日文献摘要已生成。"
                            and "失败" not in summary["global_summary"])
         check["stage"] = "complete"
     except (Exception, DiagnosticTimeout) as exc:

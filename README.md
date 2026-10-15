@@ -93,6 +93,8 @@ OPENAI_API_BASE 示例：
 
 当前默认使用 DeepSeek 官方可用模型 `deepseek-flash`，摘要请求明确关闭思考模式；旧名称 `deepseek-chat` 已停用。更换兼容服务地址时不会向其他服务附加 DeepSeek 专用参数。
 
+若最小生成请求也失败，可勾选检查工作流的 `service_probe`，对比普通文本、JSON、`/v1` 地址及 Pro 模型，单次请求最多等待 30 秒。DeepSeek 的账户检查只保存是否可调用，不保存余额金额。此模式仅检查服务连通性，通过不代表论文摘要验收通过。
+
 ## 4. 摘要重点（config/focus_area.md）
 
 总结脚本会优先读取 `config/focus_area.md`（兼容旧路径 `config/skill.md` 和 `skill.md`），并把内容注入到 LLM 提示词中作为重点方向。
