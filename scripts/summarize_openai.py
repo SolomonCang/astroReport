@@ -5,6 +5,7 @@ import re
 import subprocess
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -73,6 +74,9 @@ def _build_chat_url(api_base: str | None) -> str:
 
 def _call_api(url: str, api_key: str, payload: dict) -> dict:
     """Bound the whole request, including responses kept alive with blank chunks."""
+    if urllib.parse.urlsplit(url).hostname == "api.deepseek.com":
+        # Current DeepSeek models default to thinking; summaries need final JSON.
+        payload = {"thinking": {"type": "disabled"}, **payload}
     try:
         completed = subprocess.run(
             [sys.executable, str(Path(__file__).resolve()), "--request-worker"],

@@ -9,7 +9,7 @@
     "retention_days": 5
   },
   "openai": {
-    "model": "deepseek-chat",
+    "model": "deepseek-flash",
     "api_base": "https://api.deepseek.com"
   },
   "email": {

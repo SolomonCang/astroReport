@@ -1,4 +1,5 @@
 import json
+import subprocess
 import threading
 import time
 import unittest
@@ -47,6 +48,50 @@ class SummarizerTests(unittest.TestCase):
             summary._response_json(truncated)
         with self.assertRaisesRegex(ValueError, "empty"):
             summary._response_json({"choices": [{"message": {"content": ""}}]})
+
+    def test_deepseek_mode_is_provider_specific_and_preserves_explicit_choice(self):
+        for url, payload, expected in (
+            ("https://api.deepseek.com/chat/completions", {}, {"type": "disabled"}),
+            ("https://api.deepseek.com/v1/chat/completions",
+             {"thinking": {"type": "enabled"}}, {"type": "enabled"}),
+            ("https://example.org/chat/completions", {}, None),
+        ):
+            completed = subprocess.CompletedProcess([], 0, json.dumps({"response": {"ok": True}}))
+            with self.subTest(url=url, payload=payload), patch.object(
+                    summary.subprocess, "run", return_value=completed) as worker:
+                self.assertEqual(summary._call_api(url, "fake-key", payload), {"ok": True})
+                sent = json.loads(worker.call_args.kwargs["input"])
+                self.assertEqual(sent["payload"].get("thinking"), expected)
+                self.assertNotIn("fake-key", " ".join(worker.call_args.args[0]))
+
+    def test_request_worker_reads_json_and_redacts_http_errors(self):
+        class Response(BaseHTTPRequestHandler):
+            def log_message(self, *_):
+                pass
+
+            def do_POST(self):
+                self.rfile.read(int(self.headers["Content-Length"]))
+                if self.path == "/error":
+                    self.send_response(401)
+                    body = b'{"error":"invalid fake-key"}'
+                else:
+                    self.send_response(200)
+                    body = b'{"choices":[{"message":{"content":"ok"}}]}'
+                self.end_headers()
+                self.wfile.write(body)
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Response)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        try:
+            url = f"http://127.0.0.1:{server.server_port}"
+            actual = summary._call_api(url, "fake-key", {})
+            self.assertEqual(actual["choices"][0]["message"]["content"], "ok")
+            with self.assertRaisesRegex(RuntimeError, "HTTP 401") as raised:
+                summary._call_api(url + "/error", "fake-key", {})
+            self.assertNotIn("fake-key", str(raised.exception))
+        finally:
+            server.shutdown()
+            server.server_close()
 
     def test_blank_keepalive_chunks_cannot_extend_request_deadline(self):
         class Keepalive(BaseHTTPRequestHandler):

@@ -91,6 +91,8 @@ OPENAI_API_BASE 示例：
 
 运行后下载 `summary-check` 附件，其中包含输入样本、逐篇摘要、全局总结、完整报告、精简报告及结构检查结果。结构检查通过仍需对照原始摘要核对科学结论。模型请求设有 90 秒总时限，服务长时间保活也会触发超时，避免无限等待；失败批次继续使用原始摘要降级。日志使用即时输出，便于区分抓取、摘要和发送阶段。
 
+当前默认使用 DeepSeek 官方可用模型 `deepseek-flash`，摘要请求明确关闭思考模式；旧名称 `deepseek-chat` 已停用。更换兼容服务地址时不会向其他服务附加 DeepSeek 专用参数。
+
 ## 4. 摘要重点（config/focus_area.md）
 
 总结脚本会优先读取 `config/focus_area.md`（兼容旧路径 `config/skill.md` 和 `skill.md`），并把内容注入到 LLM 提示词中作为重点方向。
