@@ -1,0 +1,38 @@
+name: Check Text Summary (No Email)
+
+on:
+  workflow_dispatch:
+    inputs:
+      paper_limit:
+        description: "真实论文测试数量（16 篇可覆盖跨批次摘要）"
+        required: true
+        default: "16"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check-summary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Check summary generation without email
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PAPER_LIMIT: ${{ inputs.paper_limit }}
+        run: python -u -m scripts.check_summary --paper-limit "$PAPER_LIMIT"
+      - name: Save generated reports and diagnostic results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: summary-check
+          path: |
+            tmp/summary-check/
+            summarize_openai_error.log
