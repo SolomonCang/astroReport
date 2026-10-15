@@ -4,10 +4,21 @@ on:
   workflow_dispatch:
     inputs:
       paper_limit:
-        description: "真实论文测试数量（16 篇可覆盖跨批次摘要）"
+        description: "最多测试论文数（固定事实样本共 4 篇）"
         required: true
-        default: "16"
+        default: "4"
         type: string
+      sample_source:
+        description: "数据来源：固定事实样本可独立检查模型，不依赖 arXiv API 的实时可用性"
+        type: choice
+        default: reference_sample
+        options:
+          - reference_sample
+          - recent_arxiv
+      batch_size:
+        description: "逐篇摘要批大小（用 3 测试固定样本的跨批次行为）"
+        type: string
+        default: "3"
 
 permissions:
   contents: read
@@ -27,7 +38,14 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PAPER_LIMIT: ${{ inputs.paper_limit }}
-        run: python -u -m scripts.check_summary --paper-limit "$PAPER_LIMIT"
+          SAMPLE_SOURCE: ${{ inputs.sample_source }}
+          BATCH_SIZE: ${{ inputs.batch_size }}
+        run: |
+          if [ "$SAMPLE_SOURCE" = "reference_sample" ]; then
+            python -u -m scripts.check_summary --paper-limit "$PAPER_LIMIT" --batch-size "$BATCH_SIZE" --input-file tests/fixtures/summary_papers.json
+          else
+            python -u -m scripts.check_summary --paper-limit "$PAPER_LIMIT" --batch-size "$BATCH_SIZE"
+          fi
       - name: Save generated reports and diagnostic results
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,12 +1,41 @@
 from __future__ import annotations
 
 import json
+import re
+import subprocess
+import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
 
 # Phase 1 每批处理的论文数量，可通过 summarize_papers(batch_size=N) 覆盖
 BATCH_SIZE = 15
+REQUEST_TIMEOUT_SECONDS = 90
+
+
+def _paper_id(value: str) -> str:
+    """Compare arXiv identifiers independently of URL scheme and version."""
+    value = str(value).strip().rstrip("/")
+    for marker in ("/abs/", "/pdf/", "oai:arXiv.org:"):
+        if marker in value:
+            value = value.split(marker, 1)[1]
+            break
+    value = value.removeprefix("arXiv:").split("?", 1)[0].split("#", 1)[0]
+    return re.sub(r"v\d+$", "", value.removesuffix(".pdf"))
+
+
+def _response_json(response: dict) -> dict:
+    choice = response["choices"][0]
+    if choice.get("finish_reason") == "length":
+        raise ValueError("LLM output was truncated at the token limit")
+    raw = choice["message"].get("content", "")
+    if not isinstance(raw, str) or not raw.strip():
+        raise ValueError("LLM returned empty content")
+    parsed = json.loads(raw)
+    if not isinstance(parsed, dict):
+        raise ValueError("LLM output must be a JSON object")
+    return parsed
 
 
 def _load_skill_text() -> str:
@@ -43,18 +72,48 @@ def _build_chat_url(api_base: str | None) -> str:
 
 
 def _call_api(url: str, api_key: str, payload: dict) -> dict:
-    """发送单次 API 请求，返回解析后的 JSON 响应体。"""
+    """Bound the whole request, including responses kept alive with blank chunks."""
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve()), "--request-worker"],
+            input=json.dumps({"url": url, "api_key": api_key, "payload": payload}),
+            capture_output=True, text=True, timeout=REQUEST_TIMEOUT_SECONDS,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise TimeoutError(
+            f"LLM request exceeded {REQUEST_TIMEOUT_SECONDS} seconds in total"
+        ) from exc
+    if completed.returncode != 0:
+        raise RuntimeError("LLM request worker exited unexpectedly")
+    result = json.loads(completed.stdout)
+    if "error" in result:
+        raise RuntimeError(result["error"])
+    return result["response"]
+
+
+def _request_worker() -> None:
+    """Use stdin for credentials so they never appear in process arguments."""
+    args = json.load(sys.stdin)
+    key = args["api_key"]
     req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
+        args["url"],
+        data=json.dumps(args["payload"]).encode("utf-8"),
         headers={
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}",
+            "Authorization": f"Bearer {key}",
         },
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=90) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT_SECONDS) as resp:
+            result = {"response": json.loads(resp.read().decode("utf-8"))}
+    except urllib.error.HTTPError as exc:
+        result = {"error": f"HTTP {exc.code}: {exc.read().decode('utf-8', errors='replace')}"}
+    except Exception as exc:
+        result = {"error": f"{type(exc).__name__}: {exc}"}
+    output = json.dumps(result, ensure_ascii=False)
+    print(output.replace(key, "[redacted]") if key else output)
 
 
 def _log_error(msg: str) -> None:
@@ -190,6 +249,7 @@ def _summarize_batch_items(
             "index": idx,
             "id": paper.get("id", ""),
             "title": paper.get("title", ""),
+            "authors": paper.get("authors", []),
             "abstract": paper.get("summary", ""),
             "categories": paper.get("categories", []),
         })
@@ -211,6 +271,8 @@ def _summarize_batch_items(
             "每篇摘要不超过120字",
             "关键词避免过泛词，优先具体术语",
             "如果 focus_skill 非空，优先突出与其相关的方法和结论",
+            "保留原文的适用范围、关键数值、否定与不确定性，不得把相关性写成因果或把候选写成确认",
+            "专业术语无准确中文译名时保留英文；Mega-Earths（超大质量岩质行星）不得泛化成全部 Super-Earths（超级地球）",
         ],
         "papers":
         compact,
@@ -221,6 +283,7 @@ def _summarize_batch_items(
         model,
         "temperature":
         0.3,
+        "max_tokens": 8192,
         "response_format": {
             "type": "json_object"
         },
@@ -237,17 +300,17 @@ def _summarize_batch_items(
     }
 
     content = _call_api(url, api_key, payload)
-    raw = content["choices"][0]["message"]["content"]
-    parsed = json.loads(raw)
+    parsed = _response_json(content)
 
     items_by_id = {
-        item.get("id", ""): item
+        _paper_id(item.get("id", "")): item
         for item in parsed.get("items", [])
+        if isinstance(item, dict) and item.get("id")
     }
     results = []
     for paper in papers_batch:
         pid = paper.get("id", "")
-        item = items_by_id.get(pid, {})
+        item = items_by_id.get(_paper_id(pid), {})
         results.append({
             "id": pid,
             "summary": item.get("summary", "").strip() or "摘要生成失败，已降级。",
@@ -273,6 +336,7 @@ def _summarize_global_and_groups(
             "index": idx,
             "id": pid,
             "title": paper.get("title", ""),
+            "authors": paper.get("authors", []),
             "summary": items_by_id.get(pid, {}).get("summary", ""),
             "categories": paper.get("categories", []),
         })
@@ -295,7 +359,9 @@ def _summarize_global_and_groups(
         "rules": [
             "严格返回 JSON 对象，不要 markdown 代码块",
             "global_summary 必须体现 focus_skill 关注方向，并给出 related_ids",
-            "groups 必须覆盖全部文献，每篇只出现在一个组中，共 3-8 个组",
+            f"groups 必须覆盖全部文献，每篇只出现在一个组中，共 1-{min(8, len(papers))} 个非空组；按实际主题划分，不得凑组",
+            "重点论文必须使用输入 authors 中提供的作者姓名指代，不得虚构作者或使用文献序号代替作者",
+            "保留逐篇摘要中的限定条件与不确定性，不得扩大科学结论的适用范围",
             "groups 的 label 优先使用 focus_skill 中的分类名称；其余文献按具体物理主题归入更细的子类，不得已才使用'其他天文'",
             "单个 group 的文献数不得超过 12 篇；若某主题文献过多，请拆成 2 个更具体的子主题",
             "若使用'其他天文'，其文献数不得超过总文献数的 20%",
@@ -310,6 +376,7 @@ def _summarize_global_and_groups(
         model,
         "temperature":
         0.3,
+        "max_tokens": 8192,
         "response_format": {
             "type": "json_object"
         },
@@ -326,16 +393,16 @@ def _summarize_global_and_groups(
     }
 
     content = _call_api(url, api_key, payload)
-    raw = content["choices"][0]["message"]["content"]
-    parsed = json.loads(raw)
+    parsed = _response_json(content)
 
     summary_text = parsed.get("global_summary", "").strip() or "今日文献摘要已生成。"
     related_ids = parsed.get("related_ids", [])
     if not isinstance(related_ids, list):
         related_ids = []
-    paper_ids = {paper.get("id", "") for paper in papers}
+    paper_ids = {_paper_id(paper.get("id", "")): paper.get("id", "") for paper in papers}
     related_ids = [
-        rid for rid in related_ids if isinstance(rid, str) and rid in paper_ids
+        paper_ids[_paper_id(rid)] for rid in related_ids
+        if isinstance(rid, str) and _paper_id(rid) in paper_ids
     ][:5]
 
     valid_range = set(range(1, len(papers) + 1))
@@ -358,3 +425,7 @@ def _summarize_global_and_groups(
                 groups.append({"label": label, "intro": intro, "indices": valid_indices})
 
     return summary_text, related_ids, groups
+
+
+if __name__ == "__main__" and sys.argv[1:] == ["--request-worker"]:
+    _request_worker()

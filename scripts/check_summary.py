@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 from contextlib import contextmanager
-import faulthandler
 import json
 import os
 from pathlib import Path
@@ -11,6 +10,7 @@ import re
 import signal
 import time
 import urllib.parse
+import urllib.request
 
 from scripts import summarize_openai as summarizer
 from scripts.fetch_arxiv import ARXIV_API, ATOM_NS, _parse_entry, _request_xml
@@ -63,8 +63,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--paper-limit", type=int, default=16)
     parser.add_argument("--output-dir", default="tmp/summary-check")
+    parser.add_argument("--input-file", help="Use an existing public-paper input snapshot")
+    parser.add_argument("--batch-size", type=int, default=summarizer.BATCH_SIZE)
     args = parser.parse_args()
-    if not 1 <= args.paper_limit <= 40:
+    if not 1 <= args.paper_limit <= 40 or args.batch_size < 1:
         parser.error("paper-limit must be between 1 and 40")
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
@@ -91,24 +93,36 @@ def main() -> int:
         return response
 
     summarizer._call_api = instrumented_call
-    faulthandler.enable()
-    faulthandler.dump_traceback_later(120, repeat=True)
+    (output / "check.json").write_text(json.dumps(check, ensure_ascii=False, indent=2))
     started = time.monotonic()
     try:
         print("[1/3] Checking production model credentials", flush=True)
+        catalog_url = summarizer._build_chat_url(cfg["api_base"]).removesuffix("/chat/completions") + "/models"
+        request = urllib.request.Request(catalog_url, headers={"Authorization": f"Bearer {key}"})
+        with deadline(30):
+            with urllib.request.urlopen(request, timeout=25) as response:
+                catalog = json.load(response)
+        check["available_models"] = [item["id"] for item in catalog.get("data", [])]
+        print("Available models: " + json.dumps(check["available_models"]), flush=True)
+        check["stage"] = "completion_probe"
         with deadline(120):
             response = instrumented_call(
                 summarizer._build_chat_url(cfg["api_base"]), key,
-                {"model": cfg["model"], "response_format": {"type": "json_object"},
+                {"model": cfg["model"], "max_tokens": 256, "response_format": {"type": "json_object"},
                  "messages": [{"role": "user", "content": 'Return JSON only: {"status":"ok"}'}]})
         health = json.loads(response["choices"][0]["message"]["content"])
         if health.get("status") != "ok":
             raise ValueError("Model health response failed validation")
 
         check["stage"] = "input_fetch"
-        print("[2/3] Fetching real abstracts from recent report paper IDs", flush=True)
-        with deadline(180):
-            papers = sample_papers(args.paper_limit)
+        print("[2/3] Loading paper inputs", flush=True)
+        if args.input_file:
+            snapshot = json.loads(Path(args.input_file).read_text())
+            papers = snapshot["papers"][:args.paper_limit]
+            check["input_source"] = snapshot.get("description", args.input_file)
+        else:
+            with deadline(180):
+                papers = sample_papers(args.paper_limit)
         (output / "papers.json").write_text(json.dumps(papers, ensure_ascii=False, indent=2))
         check["paper_count"] = len(papers)
 
@@ -116,7 +130,8 @@ def main() -> int:
         print(f"[3/3] Summarizing {len(papers)} papers with the current implementation", flush=True)
         with deadline(360):
             summary = summarizer.summarize_papers(
-                papers=papers, model=cfg["model"], api_key=key, api_base=cfg["api_base"])
+                papers=papers, model=cfg["model"], api_key=key, api_base=cfg["api_base"],
+                batch_size=args.batch_size)
         (output / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2))
         items = summary["items"]
         invalid = [item["id"] for item in items
@@ -145,7 +160,6 @@ def main() -> int:
         check["error"] = f"{type(exc).__name__}: {str(exc).replace(key, '[redacted]')}"
         print(check["error"], flush=True)
     finally:
-        faulthandler.cancel_dump_traceback_later()
         check["seconds"] = round(time.monotonic() - started, 2)
         (output / "check.json").write_text(json.dumps(check, ensure_ascii=False, indent=2))
         print(json.dumps(check, ensure_ascii=False, indent=2), flush=True)

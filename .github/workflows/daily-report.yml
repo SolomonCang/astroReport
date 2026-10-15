@@ -36,7 +36,7 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          python -m scripts.run_daily
+          python -u -m scripts.run_daily
 
       - name: Commit and push artifacts
         run: |

@@ -1,0 +1,45 @@
+{
+  "description": "Four recent real papers, using English factual extracts paraphrased from their public arXiv abstracts. These are controlled summary-quality inputs, not full paper texts or verbatim abstracts.",
+  "papers": [
+    {
+      "id": "http://arxiv.org/abs/2610.12600v1",
+      "title": "\"Mega-Earths\" are likely an artifact of stellar activity",
+      "authors": ["Casey L. Brinkman", "Nicolas Cowan"],
+      "published": "2026-10-08T18:22:37Z",
+      "summary": "Rocky bodies above roughly ten Earth masses should usually acquire substantial gas. A few reported ultra-massive planets nevertheless appear to have terrestrial bulk compositions. These objects, termed Mega-Earths, all have magnetically active host stars with log R'_HK greater than -4.75. Brinkman and Cowan estimate that this coincidence has a probability below one percent. They find no physical argument favoring the formation of these extreme rocky planets around active stars, and interpret the reported Mega-Earth detections as activity artifacts. Their criticism of Gaussian-process mass inference concerns rocky planets orbiting active hosts. The conclusion does not claim that all Super-Earths are artifacts.",
+      "categories": ["astro-ph.EP", "astro-ph.SR"],
+      "link": "https://arxiv.org/abs/2610.12600v1",
+      "pdf_link": "https://arxiv.org/pdf/2610.12600v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.13200v1",
+      "title": "Detailed study of HD 219134: a benchmark K-dwarf with a compact planetary system",
+      "authors": ["Jérôme Bétrisey", "Camilla Pezzotti", "Gaël Buldgen", "Aline A. Vidotto", "Colin P. Folsom"],
+      "published": "2026-10-09T08:19:27Z",
+      "summary": "Asteroseismic modeling and inversions are applied to the K dwarf HD 219134 to revisit conflicting radius estimates and the evolution of its planetary system. The preferred stellar mass is 0.779 solar masses, the radius 0.753 solar radii, and the age 8.92 billion years. The latest interferometric radius is disfavored, while a 2019 measurement remains compatible. Conventional magnetic braking approximately reproduces the current rotation; weaker braking improves the match but raises wind-scaling difficulties. Reconstructed X-ray irradiation suggests early envelope loss for the innermost planets, whereas outer planets may have retained gas. HD 219134d underwent comparatively mild erosion. These atmospheric histories are model inferences, not direct observations of past stripping.",
+      "categories": ["astro-ph.EP", "astro-ph.SR"],
+      "link": "https://arxiv.org/abs/2610.13200v1",
+      "pdf_link": "https://arxiv.org/pdf/2610.13200v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.16200v1",
+      "title": "Intrinsic Soft X-ray Emission from the Hot Circumgalactic Medium in IllustrisTNG",
+      "authors": ["Minjae Kim", "Junhan Kim"],
+      "published": "2026-10-12T05:31:14Z",
+      "summary": "Kim and Kim predict hot-halo emission in the 0.5 to 2 keV band with IllustrisTNG TNG100-2. Their calculation includes gas hotter than one million kelvin in a shell extending from 0.15 R500 to R500 at redshifts zero, 0.1, and 0.2. For halos in the interval 10^11.75 to 10^12.25 solar masses, strongly star-forming galaxies have a median luminosity about five times higher than quiescent galaxies and show more central concentration. Median hot-gas masses are comparable. The luminosity contrast is associated with gas structure and thermodynamics; the samples are not rigorously matched in halo mass. The analysis establishes associations and does not isolate a causal feedback mechanism.",
+      "categories": ["astro-ph.GA"],
+      "link": "https://arxiv.org/abs/2610.16200v1",
+      "pdf_link": "https://arxiv.org/pdf/2610.16200v1"
+    },
+    {
+      "id": "http://arxiv.org/abs/2610.16111v1",
+      "title": "Interaction of eccentricity tide and convection",
+      "authors": ["Jiachen Zheng", "Xing Wei"],
+      "published": "2026-10-12T03:20:32Z",
+      "summary": "Zheng and Wei calculate rotating convection subject to eccentric tidal forcing in a spherical shell as a model of icy-satellite interiors. Combined tidal and convective motion has an energy spectrum that cannot be reconstructed by merely adding the two isolated flows. Large spatial scales are governed mainly by tides, whereas convection matters more at short scales, with a transition at intermediate scales. Tides reduce heat-transport efficiency. Kinetic-energy dissipation is approximately quadratic in tidal forcing and only weakly sensitive to buoyancy. This is a numerical interior-fluid study, not an observation of exoplanet magnetic activity.",
+      "categories": ["astro-ph.EP"],
+      "link": "https://arxiv.org/abs/2610.16111v1",
+      "pdf_link": "https://arxiv.org/pdf/2610.16111v1"
+    }
+  ]
+}
