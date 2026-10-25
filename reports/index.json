@@ -250,37 +250,6 @@
         "https://arxiv.org/abs/2610.27081v1",
         "https://arxiv.org/abs/2610.27051v1"
       ]
-    },
-    {
-      "date": "2026-10-20",
-      "title": "astroReport 日报 2026-10-20",
-      "guid": "astroreport-2026-10-20",
-      "created_at": "2026-10-20T02:17:52.215913+00:00",
-      "expire_at": "2026-10-25T02:17:52.215913+00:00",
-      "report_path": "reports/2026-10-20.md",
-      "digest_path": "reports/2026-10-20.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-10-20.md",
-      "digest_summary": "当日18篇文献中，恒星物理（脉动、星团、光谱分析）与星系/宇宙学各占约三分之一，系外行星与行星盘、星际介质与流星光谱、引力透镜与脉冲星闪烁等方向零星分布。与重点方向直接相关的仅少数：Gomez de Castro 用 IUE 与 HST ULLYSES 紫外吸积连续谱发现 T Tauri 星 F270/F303 流量比在 K5–K6 附近转变，并与全对流边界一致，解释为磁层吸积随磁场拓扑演化而改变，是当日最贴近恒星磁场主题的成果；Colombo 等分析 44 颗类太阳恒星的 Mount Wilson 指数，19 颗探测到活动周、其中 7 颗呈双周期，为磁活动—自转关系提供统计约束。此外 Zolotarev 等模拟原行星盘对 FU Ori 型爆发的动力学响应，指出盘抬升可造成 1–3 mag 假光度变化，对行星盘观测与消光解释有潜在影响；Buder 与 Różánski 分析 GALAH 光谱拟合残差，提示恒星参数反演的系统误差来源。整体上，恒星磁场、DIB、复杂有机分子方向当日缺乏直接文献。\n\n重点方向：恒星磁场与磁活动[1, 2]、恒星脉动与星团[3, 4, 5]、恒星光谱与参数反演[6]、系外行星与行星盘[7, 8, 9]、星系与宇宙学[10, 11, 12]、活动星系核与超新星[13, 14]、星际介质与太阳系天体[15, 16, 17, 18]",
-      "paper_links": [
-        "https://arxiv.org/abs/2610.25416v1",
-        "https://arxiv.org/abs/2610.25306v1",
-        "https://arxiv.org/abs/2610.25944v1",
-        "https://arxiv.org/abs/2610.25200v1",
-        "https://arxiv.org/abs/2610.25166v1",
-        "https://arxiv.org/abs/2610.25583v1",
-        "https://arxiv.org/abs/2610.25435v1",
-        "https://arxiv.org/abs/2610.25152v1",
-        "https://arxiv.org/abs/2610.25042v1",
-        "https://arxiv.org/abs/2610.25786v1",
-        "https://arxiv.org/abs/2610.25527v1",
-        "https://arxiv.org/abs/2610.25446v1",
-        "https://arxiv.org/abs/2610.25718v1",
-        "https://arxiv.org/abs/2610.25674v1",
-        "https://arxiv.org/abs/2610.25895v1",
-        "https://arxiv.org/abs/2610.25594v1",
-        "https://arxiv.org/abs/2610.25027v1",
-        "https://arxiv.org/abs/2610.24995v1"
-      ]
     }
   ]
 }
