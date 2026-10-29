@@ -79,9 +79,10 @@ def _call_api(url: str, api_key: str, payload: dict) -> dict:
         payload = dict(payload)
         if "max_tokens" in payload:
             payload.setdefault("max_completion_tokens", payload.pop("max_tokens"))
-        # The daily summarizer uses GPT-5.4 Mini without reasoning so its token
+        # The daily summarizer uses GPT-6 Luna without reasoning so its token
         # budget goes to the final JSON and temperature remains supported.
-        if payload.get("model", "").startswith("gpt-5.4"):
+        model = payload.get("model", "")
+        if model == "gpt-6-luna" or model.startswith("gpt-5.4"):
             payload.setdefault("reasoning_effort", "none")
     elif hostname == "api.deepseek.com":
         # Current DeepSeek models default to thinking; summaries need final JSON.

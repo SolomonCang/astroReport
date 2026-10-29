@@ -76,7 +76,7 @@ class SummarizerTests(unittest.TestCase):
             [], 0, json.dumps({"response": response(reply)})) for reply in replies]
         with patch.object(summary.subprocess, "run", side_effect=completed) as worker:
             actual = summary.summarize_papers(
-                [self.paper], "gpt-5.4-mini", "fake-key", "https://api.openai.com/v1")
+                [self.paper], "gpt-6-luna", "fake-key", "https://api.openai.com/v1")
         self.assertEqual(actual["items"][0]["summary"], replies[0]["items"][0]["summary"])
         self.assertEqual(actual["global_summary"], replies[1]["global_summary"])
         self.assertEqual(actual["groups"][0]["indices"], [1])
@@ -85,6 +85,7 @@ class SummarizerTests(unittest.TestCase):
             sent = json.loads(call.kwargs["input"])
             self.assertEqual(sent["url"], "https://api.openai.com/v1/chat/completions")
             payload = sent["payload"]
+            self.assertEqual(payload["model"], "gpt-6-luna")
             self.assertEqual(payload["max_completion_tokens"], 8192)
             self.assertEqual(payload["reasoning_effort"], "none")
             self.assertEqual(payload["response_format"], {"type": "json_object"})
@@ -92,7 +93,7 @@ class SummarizerTests(unittest.TestCase):
             self.assertNotIn("thinking", payload)
 
     def test_openai_parameters_preserve_overrides_and_input(self):
-        payload = {"model": "gpt-5.4-mini", "max_tokens": 256,
+        payload = {"model": "gpt-6-luna", "max_tokens": 256,
                    "max_completion_tokens": 512, "reasoning_effort": "low"}
         original = dict(payload)
         completed = subprocess.CompletedProcess([], 0, json.dumps({"response": {"ok": True}}))

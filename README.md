@@ -27,7 +27,7 @@
 - OPENAI_PLATFORM: OpenAI Platform API 密钥；日报和摘要检查工作流将其映射为脚本读取的 `OPENAI_API_KEY` 环境变量
 - RESEND_API_KEY
 
-默认模型为 `gpt-5.4-mini`，服务地址为 `https://api.openai.com/v1`，在 `config/config.json` 的 `openai.model` 和 `openai.api_base` 中修改。本地运行时使用 `OPENAI_API_KEY` 环境变量；日报脚本也支持通过环境变量 `OPENAI_MODEL` 和 `OPENAI_API_BASE` 覆盖配置。旧的 `OPENAI_API_KEY` GitHub Secret 不再用于上述工作流。
+默认模型为 `gpt-6-luna`，服务地址为 `https://api.openai.com/v1`，在 `config/config.json` 的 `openai.model` 和 `openai.api_base` 中修改。本地运行时使用 `OPENAI_API_KEY` 环境变量；日报脚本也支持通过环境变量 `OPENAI_MODEL` 和 `OPENAI_API_BASE` 覆盖配置。旧的 `OPENAI_API_KEY` GitHub Secret 不再用于上述工作流。
 
 发件邮箱通过 `config/config.json` 的 `email.from_email` 配置，当前为 `report@astrocang.com`；收件邮箱通过 `mail_list` 配置。日报和手动邮件测试共用这份配置。
 
@@ -91,7 +91,7 @@
 
 运行后下载 `summary-check` 附件，其中包含输入样本、逐篇摘要、全局总结、完整报告、精简报告及结构检查结果。结构检查通过仍需对照原始摘要核对科学结论。模型请求设有 90 秒总时限，服务长时间保活也会触发超时，避免无限等待；失败批次继续使用原始摘要降级。日志使用即时输出，便于区分抓取、摘要和发送阶段。
 
-当前默认使用 OpenAI 官方模型 `gpt-5.4-mini`，通过 Chat Completions API 生成 JSON 摘要。请求使用 `max_completion_tokens`，并设置 `reasoning_effort: none`，将输出预算用于最终摘要。接口参数依据 [OpenAI 官方文档](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)，模型信息见 [GPT-5.4 Mini](https://developers.openai.com/api/docs/models/gpt-5.4-mini)。
+当前默认使用 OpenAI 官方模型 `gpt-6-luna`，通过 Chat Completions API 生成 JSON 摘要。请求使用 `max_completion_tokens`，并设置 `reasoning_effort: none`，将输出预算用于最终摘要。接口参数依据 [OpenAI 官方文档](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)，模型信息见 [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)。
 
 若最小生成请求也失败，可勾选检查工作流的 `service_probe`，对比当前模型的普通文本和 JSON 请求，单次请求最多等待 30 秒。此模式仅检查服务连通性，通过不代表论文摘要验收通过。
 

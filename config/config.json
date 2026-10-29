@@ -9,7 +9,7 @@
     "retention_days": 5
   },
   "openai": {
-    "model": "gpt-5.4-mini",
+    "model": "gpt-6-luna",
     "api_base": "https://api.openai.com/v1"
   },
   "email": {
