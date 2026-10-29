@@ -9,8 +9,8 @@
     "retention_days": 5
   },
   "openai": {
-    "model": "deepseek-flash",
-    "api_base": "https://api.deepseek.com"
+    "model": "gpt-5.4-mini",
+    "api_base": "https://api.openai.com/v1"
   },
   "email": {
     "from_email": "report@astrocang.com"

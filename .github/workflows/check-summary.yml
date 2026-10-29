@@ -40,7 +40,7 @@ jobs:
         run: pip install -r requirements.txt
       - name: Check summary generation without email
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_PLATFORM }}
           PAPER_LIMIT: ${{ inputs.paper_limit }}
           SAMPLE_SOURCE: ${{ inputs.sample_source }}
           BATCH_SIZE: ${{ inputs.batch_size }}

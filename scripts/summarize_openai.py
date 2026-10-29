@@ -74,7 +74,16 @@ def _build_chat_url(api_base: str | None) -> str:
 
 def _call_api(url: str, api_key: str, payload: dict) -> dict:
     """Bound the whole request, including responses kept alive with blank chunks."""
-    if urllib.parse.urlsplit(url).hostname == "api.deepseek.com":
+    hostname = urllib.parse.urlsplit(url).hostname
+    if hostname == "api.openai.com":
+        payload = dict(payload)
+        if "max_tokens" in payload:
+            payload.setdefault("max_completion_tokens", payload.pop("max_tokens"))
+        # The daily summarizer uses GPT-5.4 Mini without reasoning so its token
+        # budget goes to the final JSON and temperature remains supported.
+        if payload.get("model", "").startswith("gpt-5.4"):
+            payload.setdefault("reasoning_effort", "none")
+    elif hostname == "api.deepseek.com":
         # Current DeepSeek models default to thinking; summaries need final JSON.
         payload = {"thinking": {"type": "disabled"}, **payload}
     try:

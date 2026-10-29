@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate report and send email
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_PLATFORM }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |

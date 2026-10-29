@@ -64,6 +64,46 @@ class SummarizerTests(unittest.TestCase):
                 self.assertEqual(sent["payload"].get("thinking"), expected)
                 self.assertNotIn("fake-key", " ".join(worker.call_args.args[0]))
 
+    def test_openai_summarizes_both_phases_with_compatible_parameters(self):
+        replies = [
+            {"items": [{"id": self.paper["id"], "summary": "星震研究约束恒星性质。",
+                        "keywords": ["星震学"]}]},
+            {"global_summary": "Jérôme Bétrisey 研究恒星性质。",
+             "related_ids": [self.paper["id"]],
+             "groups": [{"label": "恒星", "indices": [1]}]},
+        ]
+        completed = [subprocess.CompletedProcess(
+            [], 0, json.dumps({"response": response(reply)})) for reply in replies]
+        with patch.object(summary.subprocess, "run", side_effect=completed) as worker:
+            actual = summary.summarize_papers(
+                [self.paper], "gpt-5.4-mini", "fake-key", "https://api.openai.com/v1")
+        self.assertEqual(actual["items"][0]["summary"], replies[0]["items"][0]["summary"])
+        self.assertEqual(actual["global_summary"], replies[1]["global_summary"])
+        self.assertEqual(actual["groups"][0]["indices"], [1])
+        self.assertEqual(worker.call_count, 2)
+        for call in worker.call_args_list:
+            sent = json.loads(call.kwargs["input"])
+            self.assertEqual(sent["url"], "https://api.openai.com/v1/chat/completions")
+            payload = sent["payload"]
+            self.assertEqual(payload["max_completion_tokens"], 8192)
+            self.assertEqual(payload["reasoning_effort"], "none")
+            self.assertEqual(payload["response_format"], {"type": "json_object"})
+            self.assertNotIn("max_tokens", payload)
+            self.assertNotIn("thinking", payload)
+
+    def test_openai_parameters_preserve_overrides_and_input(self):
+        payload = {"model": "gpt-5.4-mini", "max_tokens": 256,
+                   "max_completion_tokens": 512, "reasoning_effort": "low"}
+        original = dict(payload)
+        completed = subprocess.CompletedProcess([], 0, json.dumps({"response": {"ok": True}}))
+        with patch.object(summary.subprocess, "run", return_value=completed) as worker:
+            summary._call_api("https://api.openai.com/v1/chat/completions", "fake-key", payload)
+        sent = json.loads(worker.call_args.kwargs["input"])["payload"]
+        self.assertEqual(sent["max_completion_tokens"], 512)
+        self.assertEqual(sent["reasoning_effort"], "low")
+        self.assertNotIn("max_tokens", sent)
+        self.assertEqual(payload, original)
+
     def test_request_worker_reads_json_and_redacts_http_errors(self):
         class Response(BaseHTTPRequestHandler):
             def log_message(self, *_):

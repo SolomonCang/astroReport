@@ -308,11 +308,11 @@ def main() -> int:
     openai_key = os.getenv("OPENAI_API_KEY", "")
     resend_api_key = os.getenv("RESEND_API_KEY", "")
     if openai_key:
-        print(f"      接收到 LLM 的 API Key ({openai_key[:8]}...)")
+        print("      接收到 LLM 的 API Key")
     else:
         print("      未检测到 LLM API Key")
     if resend_api_key:
-        print(f"      接收到 Resend 的 API Key ({resend_api_key[:8]}...)")
+        print("      接收到 Resend 的 API Key")
     else:
         print("      未检测到 Resend API Key")
     openai_model = os.getenv("OPENAI_MODEL") or openai_cfg.get("model", "")
