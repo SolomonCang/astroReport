@@ -134,18 +134,6 @@
         "https://arxiv.org/abs/2610.38540v1",
         "https://arxiv.org/abs/2610.38192v1"
       ]
-    },
-    {
-      "date": "2026-10-29",
-      "title": "astroReport 日报 2026-10-29",
-      "guid": "astroreport-2026-10-29",
-      "created_at": "2026-10-29T02:14:06.378530+00:00",
-      "expire_at": "2026-11-03T02:14:06.378530+00:00",
-      "report_path": "reports/2026-10-29.md",
-      "digest_path": "reports/2026-10-29.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-10-29.md",
-      "digest_summary": "今日没有匹配的新文献。",
-      "paper_links": []
     }
   ]
 }
