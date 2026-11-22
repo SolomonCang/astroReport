@@ -215,18 +215,6 @@
         "https://arxiv.org/abs/2611.20633v1",
         "https://arxiv.org/abs/2611.21350v1"
       ]
-    },
-    {
-      "date": "2026-11-17",
-      "title": "astroReport 日报 2026-11-17",
-      "guid": "astroreport-2026-11-17",
-      "created_at": "2026-11-17T02:12:24.091616+00:00",
-      "expire_at": "2026-11-22T02:12:24.091616+00:00",
-      "report_path": "reports/2026-11-17.md",
-      "digest_path": "reports/2026-11-17.digest.md",
-      "report_url": "https://github.com/SolomonCang/astroReport/blob/main/reports/2026-11-17.md",
-      "digest_summary": "今日没有匹配的新文献。",
-      "paper_links": []
     }
   ]
 }
